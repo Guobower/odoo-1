@@ -4,15 +4,18 @@ from odoo import models, fields, api
 
 class beckhoff_view_extensions(models.Model):
     _inherit = 'product.product'
+    _inherit = 'purchase.order'
 
     list_price = fields.Float(track_visibility='OnChange')
     name = fields.Char(track_visibility='OnChange')
+    barcode = fields.Char(track_visibility='OnChange')
 
 class ProductTemplateChangeTrack(models.Model):
     _inherit = 'product.template'
 
     list_price = fields.Float(track_visibility='OnChange')
     name = fields.Char(track_visibility='OnChange')
+    barcode = fields.Char(track_visibility='OnChange')
 
 class PartnerChangeData(models.Model):
     _inherit = 'res.partner'
