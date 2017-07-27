@@ -1,0 +1,46 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* partner_invoice_mail
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-07-27 20:39+0000\n"
+"PO-Revision-Date: 2017-07-27 20:39+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: partner_invoice_mail
+#: model:ir.model.fields,help:partner_invoice_mail.field_res_partner_partner_invoice_mail
+msgid "If this box is checked, a notification will display on the invoice reminding the user to send the invoice via Mail."
+msgstr "Wenn diese Option aktiviert ist, erscheint diese Box auch auf der Rechnung und erinnert den Nutzer die Rechnung per Mail zu verschicken."
+
+#. module: partner_invoice_mail
+#: model:ir.model,name:partner_invoice_mail.model_account_invoice
+msgid "Invoice"
+msgstr "Rechnung"
+
+#. module: partner_invoice_mail
+#: model:ir.model.fields,field_description:partner_invoice_mail.field_res_partner_partner_invoice_mail
+msgid "Invoices via Mail"
+msgstr "Rechnungen per E-Mail"
+
+#. module: partner_invoice_mail
+#: model:ir.model,name:partner_invoice_mail.model_res_partner
+msgid "Partner"
+msgstr "Partner"
+
+#. module: partner_invoice_mail
+#: model:ir.model.fields,field_description:partner_invoice_mail.field_account_invoice_account_invoice_mail
+msgid "Receive E-Mail Invoices"
+msgstr "E-Mail Rechnungen"
+
+#. module: partner_invoice_mail
+#: model:ir.model.fields,help:partner_invoice_mail.field_account_invoice_account_invoice_mail
+msgid "This customer wants to receive Invoices via Mail."
+msgstr "Dieser Kunde möchte Rechnungen per E-Mail empfangen."
