@@ -25,6 +25,10 @@ class PartnerChangeData(models.Model):
     city = fields.Char(track_visibility='OnChange')
     street = fields.Char(track_visibility='OnChange')
 
+class AccountInvoice(models.Model):
+    _inherit = 'account.invoice.line'
+    invoice_line_brand = fields.Many2one(string="Brand", related="product_id.product_brand_id", readonly=True)
+
 
 #    Include OnChange Events for product: price, category, name etc.
 #     name = fields.Char()
