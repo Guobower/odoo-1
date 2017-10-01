@@ -7,6 +7,7 @@ class CustomerToPo(models.Model):
 
     customer = fields.Many2one('res.partner', 'Customer', track_visibility='OnChange')
     salesperson = fields.Many2one('res.users','Salesperson', track_visibility='OnChange')
+    opportunity = fields.Many2one('crm.lead', 'Opportunity', track_visibility='OnChange')
 
     @api.multi
     @api.depends('name', 'partner_ref')
@@ -30,3 +31,13 @@ class CustomerPoCounter(models.Model):
     def _purchase_invoice_count(self):
         cond = [('customer', '=', self.id)]
         self.customer_purchase_order = len(self.env['purchase.order'].search(cond))
+
+class OpportunityPoCounter(models.Model):
+    _inherit = 'crm.lead'
+
+    opportunity_purchase_order = fields.Integer(compute='_opportunity_purchase_order_count', string='# of Purchase Orders')
+
+    @api.one
+    def _opportunity_purchase_order_count(self):
+        cond = [('opportunity', '=', self.id)]
+        self.opportunity_purchase_order = len(self.env['purchase.order'].search(cond))
