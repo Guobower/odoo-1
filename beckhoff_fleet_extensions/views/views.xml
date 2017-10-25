@@ -1,0 +1,27 @@
+<odoo>
+  <data>
+
+    <record model="ir.ui.view" id="beckhoff_fleet_vehicle_form">
+      <field name="name">fleet.vehicle.fuel.pin form</field>
+      <field name="model">fleet.vehicle</field>
+      <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='vin_sn']" position="after">
+          <field name="fuel_pin" string="Tank-Pin"/>
+        </xpath>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="beckhoff_fleet_vehicle_service_form">
+      <field name="name">fleet.vehicle.log.service.bitfarm form</field>
+      <field name="model">fleet.vehicle.log.services</field>
+      <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='inv_ref']" position="after">
+          <field name="bitfarm_id" string="Bitfarm ID" widget="url"/>
+        </xpath>
+      </field>
+    </record>
+
+  </data>
+</odoo>
