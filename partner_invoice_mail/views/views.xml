@@ -10,6 +10,7 @@
             </xpath>
         </field>
     </record>
+    
     <record id="account_invoice_mail" model="ir.ui.view">
         <field name="name">account.invoice.partner.invoice.mail</field>
         <field name="model">account.invoice</field>
@@ -20,6 +21,7 @@
             </xpath>
             <xpath expr="//field[@name='account_invoice_mail']" position="attributes">
                   <attribute name="attrs">{'invisible':[('account_invoice_mail','=', False)]}</attribute>
+                  <attribute name="readonly">1</attribute>
             </xpath>
         </field>
     </record>
