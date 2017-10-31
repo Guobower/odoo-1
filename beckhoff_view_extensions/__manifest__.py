@@ -6,8 +6,7 @@
         This module provides simple view adjustments.""",
 
     'description': """
-        This module will:
-        - restrict the quantity on hand button on product.form to group admin/settings
+
     """,
 
     'author': "Jan Beckhoff",
@@ -20,11 +19,15 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale','point_of_sale', 'purchase'],
+    'depends': ['base','product_brand','point_of_sale', 'purchase'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
+        'views/partner_views.xml',
+        'views/product_views.xml',
+        'views/purchase_order_views.xml',
+        'views/sale_order_views.xml',
         'views/views.xml',
         'views/templates.xml',
     ],
