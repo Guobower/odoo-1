@@ -1,0 +1,38 @@
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="sale_order_amount_to_invoice.list">
+      <field name="name">sale_order_amount_to_invoice list</field>
+      <field name="model">sale.order</field>
+      <field name="inherit_id" ref="sale.view_order_tree"/>
+      <field name="arch" type="xml">
+          <xpath expr="//field[@name='user_id']" position="after">
+            <field name="amount_to_invoice" string="Amount to Invoice"/>
+          </xpath>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="sale_order_amount_to_invoice.form">
+      <field name="name">sale_order_amount_to_invoice form</field>
+      <field name="model">sale.order</field>
+      <field name="inherit_id" ref="sale.view_order_form"/>
+      <field name="arch" type="xml">
+          <xpath expr="//field[@name='amount_total']" position="after">
+            <field name="amount_to_invoice" string="Amount to Invoice" />
+          </xpath>
+          <xpath expr="//field[@name='amount_to_invoice']" position="attributes">
+            <attribute name="attrs">{'invisible':[('invoice_status','!=', 'to invoice')]}</attribute>
+          </xpath>
+      </field>
+    </record>
+<!--
+    <record id="action_view_amount" model="ir.actions.act_window">
+      <field name="name">AmounToinvoice</field>
+      <field name="res_model">sale.order</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_amount_to_invoice" parent="menu_sale_invoicing" name="Amount to Invoice" sequence="3" action="action_view_amount" />
+-->
+  </data>
+</odoo>
