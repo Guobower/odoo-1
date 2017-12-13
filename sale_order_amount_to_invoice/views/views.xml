@@ -6,7 +6,7 @@
       <field name="inherit_id" ref="sale.view_order_tree"/>
       <field name="arch" type="xml">
           <xpath expr="//field[@name='user_id']" position="after">
-            <field name="amount_to_invoice" string="Amount to Invoice"/>
+            <field name="amount_to_invoice" string="Amount to Invoice" sum="Total amount to invoice"/>
           </xpath>
       </field>
     </record>

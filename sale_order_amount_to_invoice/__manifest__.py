@@ -6,7 +6,7 @@
         Add amount to invoice to sale order list and form view""",
 
     'description': """
-        Long description of module's purpose
+        
     """,
 
     'author': "Jan Beckhoff",
@@ -25,9 +25,5 @@
     'data': [
         # 'security/ir.model.access.csv',
         'views/views.xml',
-    ],
-    # only loaded in demonstration mode
-    'demo': [
-        'demo/demo.xml',
     ],
 }
