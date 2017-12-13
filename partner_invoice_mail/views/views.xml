@@ -8,9 +8,12 @@
             <xpath expr="//page[@name='sales_purchases']/group/group/field[@name='user_id']" position="after">
                 <field name="partner_invoice_mail"/>
             </xpath>
+            <xpath expr="//field[@name='partner_invoice_mail']" position="attributes">
+                <attribute name="attrs">{'invisible':[('customer','=', False)]}</attribute>
+            </xpath>
         </field>
     </record>
-    
+
     <record id="account_invoice_mail" model="ir.ui.view">
         <field name="name">account.invoice.partner.invoice.mail</field>
         <field name="model">account.invoice</field>
