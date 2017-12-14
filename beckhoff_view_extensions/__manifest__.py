@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','product_brand','point_of_sale', 'purchase'],
+    'depends': ['base','product_brand','point_of_sale', 'purchase', 'website'],
 
     # always loaded
     'data': [
@@ -30,9 +30,5 @@
         'views/sale_order_views.xml',
         'views/views.xml',
         'views/templates.xml',
-    ],
-    # only loaded in demonstration mode
-    'demo': [
-        'demo/demo.xml',
     ],
 }
