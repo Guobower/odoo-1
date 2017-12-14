@@ -92,6 +92,17 @@
             </field>
         </record>
 
+        <record id="so_lock_restrict" model="ir.ui.view">
+                <field name="name">sale.order.lock.restrict</field>
+                <field name="model">sale.order</field>
+                <field name="inherit_id" ref="sale.view_order_form"/>
+                <field name="arch" type="xml">
+                    <xpath expr="//button[@name='action_done']" position="replace">
+                         <button name="action_done" type="object" string="Lock" groups="base.group_system"/>
+                    </xpath>
+                </field>
+            </record>
+
     <record id="payment_term_id_required" model="ir.ui.view">
         <field name="name">sale.order.payment.term.required</field>
         <field name="model">account.invoice</field>
