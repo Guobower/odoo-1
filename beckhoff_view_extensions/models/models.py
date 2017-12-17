@@ -29,13 +29,6 @@ class AccountInvoice(models.Model):
     _inherit = 'account.invoice.line'
     invoice_line_brand = fields.Many2one(string="Brand", related="product_id.product_brand_id", readonly=True)
 
-
-#    Include OnChange Events for product: price, category, name etc.
-#     name = fields.Char()
-#     value = fields.Integer()
-#     value2 = fields.Float(compute="_value_pc", store=True)
-#     description = fields.Text()
-#
-#     @api.depends('value')
-#     def _value_pc(self):
-#         self.value2 = float(self.value) / 100
+class SaleOrder(models.Model):
+    _inherit = 'sale.order.line'
+    order_line_brand = fields.Many2one(string="Brand", related="product_id.product_brand_id", readonly=True)
