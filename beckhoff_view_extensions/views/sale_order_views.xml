@@ -138,6 +138,17 @@
         </field>
     </record>
 
+    <record model="ir.ui.view" id="sale_order_line_brand">
+      <field name="name">sale.order.line.tree.brand.view.form</field>
+      <field name="model">sale.order</field>
+      <field name="inherit_id" ref="sale.view_order_form"/>
+      <field name="arch" type="xml">
+       <xpath expr="//field[@name='order_line']/tree//field[@name='name']" position="after">
+            <field name="order_line_brand" groups="base.group_user"/>
+        </xpath>
+      </field>
+    </record>
+
 <!-- Disable Graph and Pivot View in Quotation and Sales Orders -->
 
     <record id="sale.action_orders" model="ir.actions.act_window">
