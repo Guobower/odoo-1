@@ -10,6 +10,7 @@ class SaleOrderAmountToInvoice(models.Model):
     @api.one
     @api.depends('order_line.qty_to_invoice')
     def _calculate_amount_to_invoice(self):
-        amount_to_invoice = 0
         for line in self.order_line:
+            if line.product_uom_qty < line.qty_to_invoice:
+                self.amount_to_invoice -= line.price_reduce_taxinc * line.qty_to_invoice
             self.amount_to_invoice += line.price_reduce_taxinc * line.qty_to_invoice
