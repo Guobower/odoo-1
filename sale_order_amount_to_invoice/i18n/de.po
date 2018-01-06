@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-12 21:12+0000\n"
-"PO-Revision-Date: 2017-12-12 21:12+0000\n"
+"POT-Creation-Date: 2018-01-06 16:56+0000\n"
+"PO-Revision-Date: 2018-01-06 16:56+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 
 #. module: sale_order_amount_to_invoice
 #: model:ir.ui.view,arch_db:sale_order_amount_to_invoice.form
-#: model:ir.ui.view,arch_db:sale_order_amount_to_invoice.list
+#: model:ir.ui.view,arch_db:sale_order_amount_to_invoice.view_sale_order_toinvoice_tree
 msgid "Amount to Invoice"
 msgstr "Abzurechnen"
 
@@ -27,7 +27,39 @@ msgid "Amount to invoice"
 msgstr "Abzurechnen"
 
 #. module: sale_order_amount_to_invoice
+#: model:ir.ui.view,arch_db:sale_order_amount_to_invoice.view_sale_order_toinvoice_tree
+msgid "Quotation Number"
+msgstr "Auftragsnummer"
+
+#. module: sale_order_amount_to_invoice
+#: model:ir.ui.view,arch_db:sale_order_amount_to_invoice.view_sale_order_toinvoice_tree
+msgid "Sale Order to Invoice"
+msgstr "Abzurechnende Aufträge"
+
+#. module: sale_order_amount_to_invoice
 #: model:ir.model,name:sale_order_amount_to_invoice.model_sale_order
 msgid "Sales Order"
 msgstr "Verkaufsauftrag"
 
+#. module: sale_order_amount_to_invoice
+#: model:ir.actions.act_window,name:sale_order_amount_to_invoice.action_orders_to_invoice_amount
+#: model:ir.ui.menu,name:sale_order_amount_to_invoice.menu_sale_order_invoice_amount
+msgid "Sales to Invoice"
+msgstr "Abzurechnende Aufträge"
+
+#. module: sale_order_amount_to_invoice
+#: model:ir.ui.view,arch_db:sale_order_amount_to_invoice.view_sale_order_toinvoice_tree
+msgid "Total Tax Included"
+msgstr "Gesamtbetrag exkl. Steuer"
+
+#. module: sale_order_amount_to_invoice
+#: model:ir.actions.act_window,help:sale_order_amount_to_invoice.action_orders_to_invoice_amount
+msgid "You can select all orders and invoice them in batch, or check\n"
+"                    every order and invoice them one by one."
+msgstr "You can select all orders and invoice them in batch, or check\n"
+"                    every order and invoice them one by one."
+
+#. module: sale_order_amount_to_invoice
+#: model:ir.actions.act_window,help:sale_order_amount_to_invoice.action_orders_to_invoice_amount
+msgid "You will find here all orders that are ready to be invoiced."
+msgstr "You will find here all orders that are ready to be invoiced."

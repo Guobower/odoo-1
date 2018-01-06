@@ -17,5 +17,5 @@ class SaleOrderAmountToInvoice(models.Model):
                 if self.partner_id.company_type == 'company':
                     # Add tax to price_unit, amount_total is tax inclusive
                     self.amount_to_invoice -= (line.price_unit + line.price_tax) * line.qty_invoiced
-                else
+                else:
                     self.amount_to_invoice -= line.price_unit * line.qty_invoiced
