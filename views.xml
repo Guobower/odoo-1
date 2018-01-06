@@ -1,0 +1,67 @@
+<odoo>
+  <data>
+<!-- Create a new list view because Sale to invoice has the same ID like Sale Orders -->
+    <record id="view_sale_order_toinvoice_tree" model="ir.ui.view">
+      <field name="name">sale.order.toinvoice.tree</field>
+      <field name="model">sale.order</field>
+      <field name="priority">4</field>
+      <field name="arch" type="xml">
+          <tree string="Sale Order to Invoice" class="o_sale_order" decoration-bf="message_needaction==True" decoration-muted="state=='cancel'">
+              <field name="message_needaction" invisible="1"/>
+              <field name="name" string="Quotation Number"/>
+              <field name="date_order"/>
+              <field name="partner_id"/>
+              <field name="user_id"/>
+              <field name="amount_to_invoice" string="Amount to Invoice" sum="Amount to Invoice" widget="monetary"/>
+              <field name="amount_total" sum="Total Tax Included" widget="monetary"/>
+              <field name="currency_id" invisible="1"/>
+              <field name="state" invisible="1"/>
+              <field name="invoice_status"/>
+          </tree>
+      </field>
+    </record>
+
+    <record id="action_orders_to_invoice_amount" model="ir.actions.act_window">
+        <field name="name">Sales to Invoice</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form,graph,pivot</field>
+        <field name="view_id" ref="view_sale_order_toinvoice_tree"/>
+        <field name="context">{}</field>
+        <field name="domain">['&amp;',('invoice_status','=','to invoice'),('amount_to_invoice', '&gt;', 0)]</field>
+        <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+        <field name="help" type="html">
+          <p>
+            You will find here all orders that are ready to be invoiced.
+          </p><p>
+            You can select all orders and invoice them in batch, or check
+            every order and invoice them one by one.
+          </p>
+        </field>
+    </record>
+
+    <menuitem action="action_orders_to_invoice_amount" id="menu_sale_order_invoice_amount" parent="sale.menu_sale_invoicing" sequence="1"/>
+
+<!-- Hide the odoo Sales to invoice without amount to invoice column -->
+    <record model="ir.ui.menu" id="sale.menu_sale_order_invoice">
+      <field name="action" eval="False" />
+    </record>
+
+<!-- Insert amount to invoice into sale order form -->
+    <record model="ir.ui.view" id="sale_order_amount_to_invoice.form">
+      <field name="name">sale_order_amount_to_invoice form</field>
+      <field name="model">sale.order</field>
+      <field name="inherit_id" ref="sale.view_order_form"/>
+      <field name="arch" type="xml">
+          <xpath expr="//field[@name='amount_total']" position="after">
+            <field name="amount_to_invoice" string="Amount to Invoice" />
+          </xpath>
+          <xpath expr="//field[@name='amount_to_invoice']" position="attributes">
+            <attribute name="attrs">{'invisible':[('invoice_status','!=', 'to invoice')]}</attribute>
+          </xpath>
+      </field>
+    </record>
+
+  </data>
+</odoo>
