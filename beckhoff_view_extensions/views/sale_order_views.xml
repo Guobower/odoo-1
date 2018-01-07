@@ -148,6 +148,18 @@
         </xpath>
       </field>
     </record>
+    
+<!-- Display the link to the opportunity outside of debug mode -->
+    <record model="ir.ui.view" id="sale_order_display_opportunity">
+      <field name="name">sale.order.display.opportunity</field>
+      <field name="model">sale.order</field>
+      <field name="inherit_id" ref="sale.view_order_form"/>
+      <field name="arch" type="xml">
+       <xpath expr="//field[@name='client_order_ref']" position="after">
+            <field name="opportunity_id"/>
+        </xpath>
+      </field>
+    </record>
 
 <!-- Disable Graph and Pivot View in Quotation and Sales Orders -->
 
