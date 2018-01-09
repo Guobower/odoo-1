@@ -5,7 +5,7 @@ from odoo import models, fields, api
 class SaleOrderAmountToInvoice(models.Model):
     _inherit = 'sale.order'
 
-    amount_to_invoice = fields.Monetary(compute="_calculate_amount_to_invoice")
+    amount_to_invoice = fields.Monetary(compute="_calculate_amount_to_invoice", store="True")
 
     @api.one
     @api.depends('order_line.qty_to_invoice')
