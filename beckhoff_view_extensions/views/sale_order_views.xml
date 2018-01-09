@@ -80,6 +80,7 @@
         </field>
     </record>
 -->
+<!-- Inactive, prevent cancel of orders with delivered products with automated action
     <record id="so_cancel_restrict" model="ir.ui.view">
             <field name="name">sale.order.cancel.restrict</field>
             <field name="model">sale.order</field>
@@ -91,7 +92,7 @@
                 </xpath>
             </field>
         </record>
-
+-->
         <record id="so_lock_restrict" model="ir.ui.view">
                 <field name="name">sale.order.lock.restrict</field>
                 <field name="model">sale.order</field>
@@ -148,7 +149,7 @@
         </xpath>
       </field>
     </record>
-    
+
 <!-- Display the link to the opportunity outside of debug mode -->
     <record model="ir.ui.view" id="sale_order_display_opportunity">
       <field name="name">sale.order.display.opportunity</field>
