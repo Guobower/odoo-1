@@ -1,0 +1,33 @@
+<odoo>
+
+  <record id="po_line_discounts" model="ir.ui.view">
+      <field name="name">purchase.order.line.discounts</field>
+      <field name="model">purchase.order</field>
+      <field name="inherit_id" ref="purchase.purchase_order_form"/>
+      <field name="arch" type="xml">
+          <xpath expr="//field[@name='order_line']/tree/field[@name='taxes_id']" position="after">
+              <field name="discount"/>
+              <field name="discount_absolute"/>
+          </xpath>
+          <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="attributes">
+              <attribute name="attrs">{'readonly': [('discount_absolute', '!=', 0)]}</attribute>
+          </xpath>
+          <xpath expr="//field[@name='order_line']/tree/field[@name='discount_absolute']" position="attributes">
+              <attribute name="attrs">{'readonly': [('discount', '!=', 0)]}</attribute>
+              <attribute name="groups">sale.group_discount_per_so_line</attribute>
+          </xpath>
+      </field>
+  </record>
+
+  <record id="account_invoice_line_supplier_absolute_discount" model="ir.ui.view">
+      <field name="name">account.invoice.supplier.form.absolute.discount</field>
+      <field name="model">account.invoice</field>
+      <field name="inherit_id" ref="account.invoice_supplier_form"/>
+      <field name="arch" type="xml">
+          <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='discount']" position="after">
+              <field name="discount_absolute"/>
+          </xpath>
+      </field>
+  </record>
+
+</odoo>
