@@ -67,18 +67,22 @@ class SaleOrderLineAbsoluteDiscount(models.Model):
         }
         return res
 # Needs more work!
+
 class SaleOrderTotalDiscount(models.Model):
     _inherit = 'sale.order'
 
     discount_total = fields.Float(compute="_get_total_discount", string="Discount", help="Total Discount including Taxes.")
 
-    @api.depends('price_unit', 'discount', 'discount_absolute', 'product_uom_qty')
+    @api.depends('order_line.price_unit', 'order_line.discount', 'order_line.discount_absolute', 'order_line.product_uom_qty')
     def _get_total_discount(self):
         for line in self.order_line:
             if line.discount_absolute > 0:
                 self.discount_total += line.discount_absolute
             else:
-                self.discount_total += line.price_total - line.price_reduce_taxinc
+                if self.partner_id.company_type == 'company':
+                    self.discount_total += line.price_total - line.price_reduce_taxexcl
+                else:
+                    self.discount_total += line.price_total - line.price_reduce_taxinc
 
 class AccountInvoiceLineAbsoluteDiscount(models.Model):
     _inherit = 'account.invoice.line'
