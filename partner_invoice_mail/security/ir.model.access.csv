@@ -1,2 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_partner_invoice_mail_partner_invoice_mail,partner_invoice_mail.partner_invoice_mail,model_partner_invoice_mail_partner_invoice_mail,,1,0,0,0

@@ -1,30 +1,29 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "beckhoff_fleet_extensions",
+    'name': "order_line_absolute_discount",
 
     'summary': """
-        Small extensions for the fleet module""",
+        Adds the possibility to choose an absolute discount in sale order lines.""",
 
     'description': """
-        Adds fields for:
-        - Fuel PIN
-        - Field for link to invoice document in DMS
+        Long description of module's purpose
     """,
 
     'author': "Jan Beckhoff",
-    'website': "",
+    'website': "http://www.yourcompany.com",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/odoo/addons/base/module/module_data.xml
     # for the full list
     'category': 'Uncategorized',
-    'version': '11.1',
+    'version': '10.0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['fleet'],
+    'depends': ['sale', 'account'],
 
     # always loaded
     'data': [
-        'views/views.xml'
+        # 'security/ir.model.access.csv',
+        'views/views.xml',
     ]
 }

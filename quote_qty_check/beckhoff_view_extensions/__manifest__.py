@@ -1,30 +1,33 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "beckhoff_fleet_extensions",
+    'name': "beckhoff_view_extensions",
 
     'summary': """
-        Small extensions for the fleet module""",
+        This module provides simple view adjustments.""",
 
     'description': """
-        Adds fields for:
-        - Fuel PIN
-        - Field for link to invoice document in DMS
+
     """,
 
     'author': "Jan Beckhoff",
-    'website': "",
+    'website': "http://www.yourcompany.com",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/odoo/addons/base/module/module_data.xml
     # for the full list
     'category': 'Uncategorized',
-    'version': '11.1',
+    'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['fleet'],
+    'depends': ['base','product_brand','point_of_sale', 'purchase', 'website'],
 
     # always loaded
     'data': [
+        # 'security/ir.model.access.csv',
+        'views/partner_views.xml',
+        'views/product_views.xml',
+        'views/purchase_order_views.xml',
+        'views/sale_order_views.xml',
         'views/views.xml'
-    ]
+    ],
 }
