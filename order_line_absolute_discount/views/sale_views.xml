@@ -16,7 +16,11 @@
               <attribute name="groups">sale.group_discount_per_so_line</attribute>
           </xpath>
           <xpath expr="//field[@name='amount_tax']" position="after">
-            <field name="discount_total" string="Discount (excl.)" domain="[('partner_id.company_type','=',True)]" />
+              <field name="discount_total" string="Discount" widget="monetary"/>
+          </xpath>
+          <xpath expr="//field[@name='discount_total']" position="attributes">
+              <attribute name="attrs">{'invisible': [('discount_total', '=', 0)]}</attribute>
+              <attribute name="groups">sale.group_discount_per_so_line</attribute>
           </xpath>
       </field>
     </record>
@@ -34,6 +38,13 @@
             </xpath>
             <xpath expr="/form/sheet/notebook/page[1]/field[@name='invoice_line_ids']/tree/field[@name='discount_absolute']" position="attributes">
                 <attribute name="attrs">{'readonly': [('discount', '!=', 0)]}</attribute>
+                <attribute name="groups">sale.group_discount_per_so_line</attribute>
+            </xpath>
+            <xpath expr="//field[@name='amount_tax']" position="after">
+                <field name="discount_total" string="Discount" widget="monetary"/>
+            </xpath>
+            <xpath expr="//field[@name='discount_total']" position="attributes">
+                <attribute name="attrs">{'invisible': [('discount_total', '=', 0)]}</attribute>
                 <attribute name="groups">sale.group_discount_per_so_line</attribute>
             </xpath>
       </field>

@@ -12,7 +12,7 @@ class PurchaseOrderLineDiscounts(models.Model):
         for line in self:
             # Compute price to be passed to taxes depending on discount mode
             if line.discount_absolute > 0:
-                if line.price_unit < line.absolute_discount:
+                if line.price_unit < line.discount_absolute:
                     raise ValidationError("Discount cannot be greater than Unit price.")
                 price = line.price_unit - line.discount_absolute
             else:

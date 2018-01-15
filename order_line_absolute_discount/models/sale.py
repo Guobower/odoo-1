@@ -62,27 +62,24 @@ class SaleOrderLineAbsoluteDiscount(models.Model):
             'product_id': self.product_id.id or False,
             'layout_category_id': self.layout_category_id and self.layout_category_id.id or False,
             'invoice_line_tax_ids': [(6, 0, self.tax_id.ids)],
-            'account_analytic_id': self.order_id.project_id.id,
+            'account_analytic_id': self.order_id.analytic_account_id.id,
             'analytic_tag_ids': [(6, 0, self.analytic_tag_ids.ids)],
         }
         return res
-# Needs more work!
 
 class SaleOrderTotalDiscount(models.Model):
     _inherit = 'sale.order'
 
-    discount_total = fields.Float(compute="_get_total_discount", string="Discount", help="Total Discount including Taxes.")
+    discount_total = fields.Float(compute="_get_total_discount", string="Discount", help="Total Discount across all Sale Order lines")
 
     @api.depends('order_line.price_unit', 'order_line.discount', 'order_line.discount_absolute', 'order_line.product_uom_qty')
     def _get_total_discount(self):
         for line in self.order_line:
             if line.discount_absolute > 0:
-                self.discount_total += line.discount_absolute
-            else:
-                if self.partner_id.company_type == 'company':
-                    self.discount_total += line.price_total - line.price_reduce_taxexcl
-                else:
-                    self.discount_total += line.price_total - line.price_reduce_taxinc
+                self.discount_total += line.discount_absolute * line.product_uom_qty
+            if line.discount > 0:
+                self.discount_total += (line.price_unit - line.price_unit * (1 - (line.discount or 0.0) / 100.0)) * line.product_uom_qty
+
 
 class AccountInvoiceLineAbsoluteDiscount(models.Model):
     _inherit = 'account.invoice.line'
@@ -96,6 +93,8 @@ class AccountInvoiceLineAbsoluteDiscount(models.Model):
     def _compute_price(self):
         currency = self.invoice_id and self.invoice_id.currency_id or None
         """ Addition to odoo core """
+        if self.discount_absolute < 0:
+            raise ValidationError("Absolute Discount cannot be negative.")
         if self.discount_absolute > 0:
             if self.discount_absolute > self.price_unit:
                 raise ValidationError("Absolute Discount cannot be greater than Unit Price.")
@@ -113,3 +112,16 @@ class AccountInvoiceLineAbsoluteDiscount(models.Model):
             price_subtotal_signed = self.invoice_id.currency_id.with_context(date=self.invoice_id._get_currency_rate_date()).compute(price_subtotal_signed, self.invoice_id.company_id.currency_id)
         sign = self.invoice_id.type in ['in_refund', 'out_refund'] and -1 or 1
         self.price_subtotal_signed = price_subtotal_signed * sign
+
+class AccountInvoiceTotalDiscount(models.Model):
+    _inherit = 'account.invoice'
+
+    discount_total = fields.Float(compute="_get_total_discount", string="Discount", help="Total Discount across all Invoice lines. The discount has already been deducted on each line.")
+
+    @api.depends('invoice_line_ids.price_unit', 'invoice_line_ids.discount', 'invoice_line_ids.discount_absolute', 'invoice_line_ids.quantity')
+    def _get_total_discount(self):
+        for line in self.invoice_line_ids:
+            if line.discount_absolute > 0:
+                self.discount_total += line.discount_absolute * line.quantity
+            if line.discount > 0:
+                self.discount_total += (line.price_unit - line.price_unit * (1 - (line.discount or 0.0) / 100.0)) * line.quantity
