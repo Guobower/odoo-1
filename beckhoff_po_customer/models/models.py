@@ -8,6 +8,7 @@ class CustomerToPo(models.Model):
     customer = fields.Many2one('res.partner', 'Customer', track_visibility='OnChange')
     salesperson = fields.Many2one('res.users','Salesperson', track_visibility='OnChange')
 
+    # Remove the total amount from the purchase order path 
     @api.multi
     @api.depends('name', 'partner_ref')
     def name_get(self):

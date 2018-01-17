@@ -63,7 +63,7 @@
               </field>
               <search>
                   <filter name="customer_groupby" string="Customer" context="{'group_by':'customer'}"/>
-                  <filter name="customer_filter" string="Customer" domain="[('customer','!=', False)"/>
+                  <filter name="customer_filter" string="Customer" domain="[('customer','!=', False)]"/>
               <!--<filter name="salesperson" string="Salesperson" context="{'group_by':'salesperson'}"/>-->
               </search>
         </field>
