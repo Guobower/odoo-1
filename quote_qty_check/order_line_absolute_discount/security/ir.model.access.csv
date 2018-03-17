@@ -1,2 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_order_line_absolute_discount_order_line_absolute_discount,order_line_absolute_discount.order_line_absolute_discount,model_order_line_absolute_discount_order_line_absolute_discount,,1,0,0,0
