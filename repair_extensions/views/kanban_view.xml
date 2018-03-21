@@ -1,0 +1,66 @@
+<odoo>
+    <!-- Need to include stage_id to sort kanban stages properly -->
+
+    <record id="mrp_repair.view_mrp_repair_kanban" model="ir.ui.view">
+        <field name="name">mrp.repair.kanban</field>
+        <field name="model">mrp.repair</field>
+        <field name="view_type">tree,kanban</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column o_opportunity_kanban">
+                <field name="state"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <field name="color"/>
+                <field name="technician"/>
+                <field name="activity_ids"/>
+                <field name="activity_state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="#{kanban_color(record.color.raw_value)} oe_kanban_global_click">
+                            <div class="o_dropdown_kanban dropdown">
+                                <!-- Top Right Dropdown menu here-->
+                                <a class="dropdown-toggle btn" data-toggle="dropdown" href="#">
+                                    <span class="fa fa-bars fa-lg"/>
+                                </a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                    <li><ul class="oe_kanban_colorpicker" data-field="color"/></li>
+                                </ul>
+                            </div>
+                            <div class="oe_kanban_content">
+                                <div>
+                                    <field name="tag_ids"/>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <strong><field name="name"/></strong>
+                                    </div>
+                                    <div class="col-xs-6 text-right">
+                                        <span class="label label-default"><field name="state" widget="kanban_label_selection"
+                                            options="{'classes':{'draft': 'info', 'cancel': 'danger', 'done': 'success', 'under_repair': 'default'}}"/></span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <field name="product_id"/>
+                                </div>
+                                <div>
+                                    <field name="partner_id"/>
+                                </div>
+                                <div class="oe_kanban_footer">
+                                    <div>
+                                        <!-- Left Hand Footer -->
+                                    </div>
+                                    <div class="oe_kanban_bottom_right pull-right">
+                                        <!-- Right Hand Footer -->
+                                        <field name="activity_ids" widget="kanban_activity"/>
+                                        <img t-att-src="kanban_image('res.users', 'image_small', record.technician.raw_value)" t-att-title="record.technician.value" width="24" height="24" class="oe_kanban_avatar pull-right"/>
+                                    </div>
+                                </div>
+                            </div>
+                      </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+</odoo>

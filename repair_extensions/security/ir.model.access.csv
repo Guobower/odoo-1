@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_beckhoff_repair_extensions_beckhoff_repair_extensions,beckhoff_repair_extensions.beckhoff_repair_extensions,model_beckhoff_repair_extensions_beckhoff_repair_extensions,,1,0,0,0

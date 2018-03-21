@@ -1,0 +1,75 @@
+<odoo>
+
+    <record id="repair_order_form_product_history" model="ir.ui.view">
+        <field name="name">repair.order.product.history.form</field>
+        <field name="model">mrp.repair</field>
+        <field name="inherit_id" ref="mrp_repair.view_repair_order_form"/>
+        <field name="arch" type="xml">
+            <button name="action_created_invoice" position="before">
+                <button type="object"  name="action_view_invoice"
+                        class="oe_stat_button"
+                        icon="fa-pencil-square-o"
+                        string="Origin Inv"
+                        attrs="{'invisible': [('invoice_line_id','=', False)]}">
+                </button>
+            </button>
+            <field name ="product_id" position="before">
+                <field name="product_brand" nolabel="1"/>
+                <field name="product_category" nolabel="1"/>
+            </field>
+            <field name="partner_id" position="after">
+                <field name="invoice_line_id"
+                    options="{'no_create': True}"
+                    domain="['|',
+                      ('invoice_id.partner_id', '=', partner_id),
+                      ('invoice_id.partner_id', 'child_of', partner_id)]"
+                    attrs="{'invisible': ['|',
+                      ('partner_id', '=', False),
+                      ('state', '!=', 'draft')]}"/>
+                <field name="amount_repair_until" widget="monetary"/>
+                <field name="technician"/>
+                <field name="tag_ids" widget="many2many_tags"/>
+           </field>
+           <field name="internal_notes" position="before">
+                <h3>Internal Notes</h3>
+           </field>
+           <field name="quotation_notes" position="before">
+                <h3>Error Description</h3>
+           </field>
+           <!-- This will invisible the filed when invoice_line_id is empty
+           <field name="product_id" position="attributes">
+                <attribute name="attrs">{'readonly': [
+                  ('invoice_line_id', '!=', False),
+                  ]}
+                </attribute>
+          </field>
+        -->
+        </field>
+    </record>
+    
+    <!-- Repair Tag Views -->
+    <record id="mrp_repair_tag_form" model="ir.ui.view">
+        <field name="name">mrp.repair.tag.form</field>
+        <field name="model">mrp.repair.tag</field>
+        <field name="arch" type="xml">
+            <form string="Repair Tags">
+                <group>
+                    <field name="name"/>
+                    <field name="color" groups="base.group_no_one"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="mrp_repair_tag_tree" model="ir.ui.view">
+        <field name="name">mrp.repair.tag.tree</field>
+        <field name="model">mrp.repair.tag</field>
+        <field name="arch" type="xml">
+            <tree string="Repair Tags">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+
+</odoo>
