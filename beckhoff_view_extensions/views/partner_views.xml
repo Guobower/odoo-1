@@ -1,7 +1,6 @@
 <odoo>
-  <data>
 
-<!-- Partner -->
+<!-- Partner  TODO: Customer Ledger-->
     <record id="partner_title_no_create" model="ir.ui.view">
         <field name="name">res.partner.titel.no.create</field>
         <field name="model">res.partner</field>
@@ -35,7 +34,7 @@
         </field>
     </record>
 
-<!--
+
     <record id="partner_search" model="ir.ui.view">
         <field name="name">Partner search</field>
         <field name="model">res.partner</field>
@@ -47,7 +46,5 @@
             </field>
         </field>
     </record>
--->
 
-  </data>
 </odoo>

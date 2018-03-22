@@ -4,7 +4,6 @@ from odoo import models, fields, api
 
 class beckhoff_view_extensions(models.Model):
     _inherit = 'product.product'
-    _inherit = 'purchase.order'
 
     list_price = fields.Float(track_visibility='OnChange')
     name = fields.Char(track_visibility='OnChange')
@@ -32,3 +31,8 @@ class AccountInvoice(models.Model):
 class SaleOrder(models.Model):
     _inherit = 'sale.order.line'
     order_line_brand = fields.Many2one(string="Brand", related="product_id.product_brand_id", readonly=True)
+
+class MoveLine(models.Model):
+    _inherit = 'stock.move.line'
+
+    partner_id = fields.Many2one(related="move_id.picking_partner_id", string="Partner")

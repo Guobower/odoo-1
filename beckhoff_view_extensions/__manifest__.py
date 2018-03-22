@@ -16,7 +16,7 @@
     # Check https://github.com/odoo/odoo/blob/master/odoo/addons/base/module/module_data.xml
     # for the full list
     'category': 'Uncategorized',
-    'version': '0.1',
+    'version': '11.0',
 
     # any module necessary for this one to work correctly
     'depends': ['base','product_brand','point_of_sale', 'purchase', 'website'],
@@ -28,6 +28,7 @@
         'views/product_views.xml',
         'views/purchase_order_views.xml',
         'views/sale_order_views.xml',
+        'stock_views.xml',
         'views/views.xml'
     ],
 }

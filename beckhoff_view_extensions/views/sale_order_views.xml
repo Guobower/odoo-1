@@ -1,5 +1,4 @@
 <odoo>
-  <data>
 
 <!-- Sale order -->
 
@@ -20,7 +19,8 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
-                <attribute name="options">{'no_quick_create':True}</attribute>
+                <attribute name="options">{'no_quick_create':True, &quot;always_reload&quot;: True}</attribute>
+                <attribute name="context">{'search_default_customer':1, 'show_address': 1}</attribute>
             </xpath>
         </field>
     </record>
@@ -31,7 +31,8 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='partner_invoice_id']" position="attributes">
-                <attribute name="options">{'no_quick_create':True}</attribute>
+                <attribute name="options">{'no_quick_create':True, &quot;always_reload&quot;: True}</attribute>
+                <attribute name="context">{'search_default_customer':1, 'show_address': 1}</attribute>
             </xpath>
         </field>
     </record>
@@ -93,16 +94,16 @@
             </field>
         </record>
 -->
-        <record id="so_lock_restrict" model="ir.ui.view">
-                <field name="name">sale.order.lock.restrict</field>
-                <field name="model">sale.order</field>
-                <field name="inherit_id" ref="sale.view_order_form"/>
-                <field name="arch" type="xml">
-                    <xpath expr="//button[@name='action_done']" position="replace">
-                         <button name="action_done" type="object" string="Lock" groups="base.group_system"/>
-                    </xpath>
-                </field>
-            </record>
+    <record id="so_lock_restrict" model="ir.ui.view">
+        <field name="name">sale.order.lock.restrict</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_done']" position="replace">
+                 <button name="action_done" type="object" string="Lock" groups="base.group_system"/>
+            </xpath>
+        </field>
+    </record>
 
     <record id="payment_term_id_required" model="ir.ui.view">
         <field name="name">sale.order.payment.term.required</field>
@@ -111,30 +112,6 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='payment_term_id']" position="attributes">
                 <attribute name="required">True</attribute>
-            </xpath>
-        </field>
-    </record>
-
-    <record id="show_show_shipping_address" model="ir.ui.view">
-        <field name="name">sale.order.show.shipping.address</field>
-        <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale.view_order_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
-                <attribute name="context">{'search_default_customer':1, 'show_address': 1}</attribute>
-                <attribute name="options">{&quot;always_reload&quot;: True}</attribute>
-            </xpath>
-        </field>
-    </record>
-
-    <record id="show_show_invoice_address" model="ir.ui.view">
-        <field name="name">sale.order.show.invoice.address</field>
-        <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale.view_order_form"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='partner_invoice_id']" position="attributes">
-                <attribute name="context">{'search_default_customer':1, 'show_address': 1}</attribute>
-                <attribute name="options">{&quot;always_reload&quot;: True}</attribute>
             </xpath>
         </field>
     </record>
@@ -151,7 +128,8 @@
     </record>
 
 <!-- Display the link to the opportunity outside of debug mode -->
-    <record model="ir.ui.view" id="sale_order_display_opportunity">
+<!--
+<record model="ir.ui.view" id="sale_order_display_opportunity">
       <field name="name">sale.order.display.opportunity</field>
       <field name="model">sale.order</field>
       <field name="inherit_id" ref="sale.view_order_form"/>
@@ -161,7 +139,7 @@
         </xpath>
       </field>
     </record>
-
+-->
 <!-- Disable Graph and Pivot View in Quotation and Sales Orders -->
 
     <record id="sale.action_orders" model="ir.actions.act_window">
@@ -169,7 +147,7 @@
         <field name="res_model">sale.order</field>
         <field name="view_mode">tree,kanban,form,calendar</field>
     </record>
-
+    <!-- v11: Probably not needed anymore -->
     <record id="sale.action_orders_to_invoice" model="ir.actions.act_window">
         <field name="name">Sales to Invoice</field>
         <field name="res_model">sale.order</field>
@@ -188,19 +166,17 @@
         <field name="view_mode">tree,kanban,form,calendar</field>
     </record>
 
-    <!-- Restricting Access to Invoiced Pivot from Sales Dashboard
-    <record id="crm_restrict_invoice_pivot" model="ir.ui.view">
-        <field name="name">Restrict Access to Invoiced Pivot</field>
-        <field name="model">account.invoice.report</field>
-        <field name="inherit_id" ref="account.view_account_invoice_report_pivot"/>
-        <field name="arch" type="xml">
-            <xpath expr="//view[@name='account.invoice.report.pivot']" position="attributes">
-                <attribute name="groups">sales_team.group_sale_manager</attribute>
-            </xpath>
-        </field>
+    <record id="crm_lead_opportunities" model="ir.actions.act_window">
+        <field name="name">Pipeline</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">tree,kanban,form,calendar</field>
     </record>
-#    ref: sales_team.crm_team_salesteams_act
-  -->
 
-  </data>
+    <record id="crm_lead_opportunities_tree_view" model="ir.actions.act_window">
+        <field name="name">Pipeline</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">tree,kanban,form,calendar</field>
+    </record>
+
+
 </odoo>

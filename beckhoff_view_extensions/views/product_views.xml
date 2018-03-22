@@ -1,19 +1,18 @@
 <odoo>
-  <data>
-    <!--
-      <record id="form_product_qty_on_hand" model="ir.ui.view">
-          <field name="name">Invisibility of qty on hand</field>
-          <field name="model">product.product</field>
-          <field name="inherit_id" ref="product.product_normal_form_view"/>
-          <field name="arch" type="xml">
-              <xpath expr="//button[@name='194']" position="attributes">
-                  <attribute name="groups">base.group_system</attribute>
-              </xpath>
-          </field>
-      </record>
--->
 
-<!--Product-->
+<record id="form_product_qty_on_hand" model="ir.ui.view">
+    <field name="name">Invisibility of qty on hand</field>
+    <field name="model">stock.change.product.qty</field>
+    <field name="inherit_id" ref="stock.view_change_product_quantity"/>
+    <field name="arch" type="xml">
+        <xpath expr="//button[@name='change_product_qty']" position="attributes">
+            <attribute name="groups">base.group_system</attribute>
+        </xpath>
+    </field>
+</record>
+
+
+<!--Product -->
     <record id="product_categ_no_edit" model="ir.ui.view">
         <field name="name">product.template.categ.no.create.edit</field>
         <field name="model">product.template</field>
@@ -57,6 +56,4 @@
             </xpath>
         </field>
     </record>
-
-  </data>
 </odoo>

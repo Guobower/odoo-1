@@ -3,28 +3,19 @@
 
 
 <!-- Point of Sale -->
-<!-- This does not work-->
-      <record id="pos_form_close_session_prevent" model="ir.ui.view">
-          <field name="name">pos.session.close</field>
-          <field name="model">pos.session</field>
-          <field name="inherit_id" ref="point_of_sale.view_pos_session_form"/>
-          <field name="arch" type="xml">
-              <xpath expr="//button[@name='action_pos_session_closing_control']" position="attributes">
-                  <attribute name="groups">point_of_sale.group_pos_manager</attribute>
-              </xpath>
-          </field>
-      </record>
-
       <record id="pos_add_add_filter_reports" model="ir.ui.view">
           <field name="name">pos.reports.add.filter</field>
           <field name="model">report.pos.order</field>
           <field name="inherit_id" ref="point_of_sale.view_report_pos_order_search"/>
           <field name="arch" type="xml">
                 <filter name="year" position="before">
-                    <filter name="today" string="Today" domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter name="today" string="Today" domain="[('date', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),
+                      ('date', '&lt;=', datetime.datetime.now().strftime('%Y-%m-%d 23:23:59'))]"/>
+                    <!--TO DO-->
                     <filter name="yesterday" string="Yesterday"
-                       domain="[('date', '=', (context_today() + datetime.timedelta(days=-1)).strftime('%Y-%m-%d'))]"/>
+                       domain="[('date', '&lt;=', (context_today()-datetime.timedelta(days=1)).strftime('%Y-%m-%d'))]"/>
                      <filter string="Current Month" name="current_month" domain="[('date','&lt;',(context_today()+relativedelta(months=1)).strftime('%Y-%m-01')), ('date','&gt;=',time.strftime('%Y-%m-01'))]"/>
+                    <!--TO DO-->
                      <filter string="Last Month"
                             domain="[('date','&lt;=', (context_today()-relativedelta(day=31, months=1)).strftime('%Y-%m-%d')),
                             ('date','&gt;=',(context_today()-relativedelta(day=1,months=1)).strftime('%Y-%m-%d'))]"
