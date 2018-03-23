@@ -47,4 +47,17 @@
         </field>
     </record>
 
+    <record id="partner_tree_view_address" model="ir.ui.view">
+        <field name="name">res.partner.tree.address</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <field name="display_name" position="after">
+                  <field name="street" string="Straße"/>
+                  <field name="zip" string="PLZ"/>
+                  <field name="city" string="Stadt"/>
+            </field>
+        </field>
+    </record>
+
 </odoo>

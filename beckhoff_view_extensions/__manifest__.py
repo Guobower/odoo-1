@@ -28,7 +28,7 @@
         'views/product_views.xml',
         'views/purchase_order_views.xml',
         'views/sale_order_views.xml',
-        'stock_views.xml',
+        'views/stock_views.xml',
         'views/views.xml'
     ],
 }
