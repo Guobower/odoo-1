@@ -13,7 +13,10 @@
                         attrs="{'invisible': [('invoice_line_id','=', False)]}">
                 </button>
             </button>
+            <xpath expr="//field[@name='partner_id']" position="replace">
+            </xpath>
             <field name ="product_id" position="before">
+                <field name="partner_id"/>
                 <field name="product_brand" nolabel="1"/>
                 <field name="product_category" nolabel="1"/>
             </field>
@@ -26,9 +29,14 @@
                     attrs="{'invisible': ['|',
                       ('partner_id', '=', False),
                       ('state', '!=', 'draft')]}"/>
+            </field>
+            <field name="lot_id" position="after">
                 <field name="amount_repair_until" widget="monetary"/>
+            </field>
+            <field name="pricelist_id" position="after">
                 <field name="technician"/>
                 <field name="tag_ids" widget="many2many_tags"/>
+                <field name="helpdesk_ticket_id"/>
            </field>
            <field name="internal_notes" position="before">
                 <h3>Internal Notes</h3>
@@ -46,7 +54,18 @@
         -->
         </field>
     </record>
-    
+
+    <record id="Helpdesk_ticket_repair_search" model="ir.ui.view">
+        <field name="name">Helpdesk Ticket</field>
+        <field name="model">mrp.repair</field>
+        <field name="inherit_id" ref="mrp_repair.view_repair_order_form_filter"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                  <field name="helpdesk_ticket_id" string="Helpdesk Ticket" invisible="1"/>
+            </field>
+        </field>
+    </record>
+
     <!-- Repair Tag Views -->
     <record id="mrp_repair_tag_form" model="ir.ui.view">
         <field name="name">mrp.repair.tag.form</field>

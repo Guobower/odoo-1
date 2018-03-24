@@ -30,7 +30,8 @@
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'views/views.xml',
+        'views/helpdesk_views.xml',
         'views/kanban_view.xml',
+        'views/views.xml',
     ]
 }

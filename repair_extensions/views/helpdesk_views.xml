@@ -1,0 +1,31 @@
+<odoo>
+  <record id="action_view_repair_order" model="ir.actions.act_window">
+      <field name="name">Repair Order</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">mrp.repair</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="target">current</field>
+    <!--  <field name="binding_model_id" ref="sale.model_sale_order"/>-->
+  </record>
+
+  <record id="helpdesk_ticket_repair_order_button" model="ir.ui.view">
+      <field name="name">helpdesk.ticket.repair.order.button</field>
+      <field name="model">helpdesk.ticket</field>
+      <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+      <field name="arch" type="xml">
+          <xpath expr="//button[@name='assign_ticket_to_self']" position="after">
+               <button name="%(action_view_repair_order)d"
+                 type="action" string="Create Repair Order"
+                 context="{'default_partner_id': partner_id}" />
+          </xpath>
+          <xpath expr="//button[@name='open_customer_tickets']" position="before">
+              <button class="oe_stat_button" name="ticket_repair_orders"
+                type="object" icon="fa-wrench"
+                attrs="{'invisible':[('repair_count', '&lt;', 1)]}">
+                <field name="repair_count" string="Repair Orders" widget="statinfo"/>
+              </button>
+          </xpath>
+      </field>
+  </record>
+</odoo>

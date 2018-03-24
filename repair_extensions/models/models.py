@@ -24,6 +24,7 @@ class RepairOrder(models.Model):
         help="Repairable without asking if total is below. 0 indicates that the customer required a quote.")
     technician = fields.Many2one(comodel_name="res.users", String="Technician")
     tag_ids = fields.Many2many('mrp.repair.tag', string="Tags")
+    helpdesk_ticket_id = fields.Many2one(comodel_name="helpdesk.ticket", string="Helpdesk Ticket")
 
     color = fields.Integer('Color Index', default=0)
 
