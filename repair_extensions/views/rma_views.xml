@@ -1,0 +1,24 @@
+<odoo>
+  <record id="rma_order_line_helpdesk_ticket" model="ir.ui.view">
+      <field name="name">rma.order.line.helpdesk.ticket</field>
+      <field name="model">rma.order.line</field>
+      <field name="inherit_id" ref="rma.view_rma_line_form"/>
+      <field name="arch" type="xml">
+          <xpath expr="//field[@name='reference_move_id']" position="before">
+                <field name="helpdesk_ticket_id" string="Helpdesk Ticket"/>
+          </xpath>
+      </field>
+  </record>
+
+  <!-- Add helpdesk to search view to be able to use search_default -->
+  <record id="Helpdesk_ticket_rma_search" model="ir.ui.view">
+      <field name="name">rma.order.line.helpdesk.ticket.search</field>
+      <field name="model">rma.order.line</field>
+      <field name="inherit_id" ref="rma.view_rma_rma_line_filter"/>
+      <field name="arch" type="xml">
+          <field name="name" position="after">
+                <field name="helpdesk_ticket_id" string="Helpdesk Ticket" invisible="1"/>
+          </field>
+      </field>
+  </record>
+</odoo>

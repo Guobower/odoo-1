@@ -22,11 +22,13 @@ class RepairOrder(models.Model):
     amount_repair_until = fields.Float(string="Repair without quote until",
         placeholder="0", track_visibility="onchange",
         help="Repairable without asking if total is below. 0 indicates that the customer required a quote.")
-    technician = fields.Many2one(comodel_name="res.users", String="Technician")
+    technician = fields.Many2one(comodel_name="res.users", String="Technician", default=lambda self: self.env.user)
     tag_ids = fields.Many2many('mrp.repair.tag', string="Tags")
     helpdesk_ticket_id = fields.Many2one(comodel_name="helpdesk.ticket", string="Helpdesk Ticket")
 
     color = fields.Integer('Color Index', default=0)
+    currency_id = fields.Many2one(comodel_name="res.currency", string="Currency",
+                                    default=lambda self: self.env.user.company_id.currency_id)
 
 
     @api.onchange('partner_id')

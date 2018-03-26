@@ -1,4 +1,19 @@
 <odoo>
+
+  <!-- Helpdesk views -->
+  <record id="helpdesk_ticket_update_customer" model="ir.ui.view">
+      <field name="name">helpdesk.ticket.repair.order.button</field>
+      <field name="model">helpdesk.ticket</field>
+      <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+      <field name="arch" type="xml">
+          <field name="partner_email" position="after">
+              <field name="status_update" widget="checkbox" attrs="{'invisible':[('partner_email', '=', False)]}" />
+          </field>
+      </field>
+  </record>
+
+  <!-- Repair Order Views -->
+
   <record id="action_view_repair_order" model="ir.actions.act_window">
       <field name="name">Repair Order</field>
       <field name="type">ir.actions.act_window</field>
@@ -6,7 +21,6 @@
       <field name="view_type">form</field>
       <field name="view_mode">form</field>
       <field name="target">current</field>
-    <!--  <field name="binding_model_id" ref="sale.model_sale_order"/>-->
   </record>
 
   <record id="helpdesk_ticket_repair_order_button" model="ir.ui.view">
@@ -17,15 +31,58 @@
           <xpath expr="//button[@name='assign_ticket_to_self']" position="after">
                <button name="%(action_view_repair_order)d"
                  type="action" string="Create Repair Order"
-                 context="{'default_partner_id': partner_id}" />
+                 context="{'default_partner_id': partner_id,
+                            'default_helpdesk_ticket_id': id,
+                            'default_technician': user_id,
+                            'default_quotation_notes': description,
+                            }" />
           </xpath>
           <xpath expr="//button[@name='open_customer_tickets']" position="before">
               <button class="oe_stat_button" name="ticket_repair_orders"
                 type="object" icon="fa-wrench"
                 attrs="{'invisible':[('repair_count', '&lt;', 1)]}">
-                <field name="repair_count" string="Repair Orders" widget="statinfo"/>
+                <field name="repair_count" string="Repair Order" widget="statinfo"/>
+              </button>
+          </xpath>
+          <field name="priority" position="after">
+              <field name="repair_status" attrs="{'invisible':[('repair_status', '=', 'None')]}"/>
+              <field name="rma_status" attrs="{'invisible':[('rma_status', '=', 'None')]}"/>
+          </field>
+      </field>
+  </record>
+
+  <!-- RMA views -->
+
+  <record id="action_view_rma_order" model="ir.actions.act_window">
+      <field name="name">Customer RMA</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">rma.order.line</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="target">current</field>
+  </record>
+
+  <record id="helpdesk_ticket_rma_order_button" model="ir.ui.view">
+      <field name="name">helpdesk.ticket.rma.order.button</field>
+      <field name="model">helpdesk.ticket</field>
+      <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+      <field name="arch" type="xml">
+          <xpath expr="//button[@name='assign_ticket_to_self']" position="after">
+               <button name="%(action_view_rma_order)d"
+                 type="action" string="Create RMA"
+                 context="{'default_partner_id': partner_id,
+                            'default_helpdesk_ticket_id': id,
+                            'default_assigned_to': user_id,
+                            }" />
+          </xpath>
+          <xpath expr="//button[@name='open_customer_tickets']" position="before">
+              <button class="oe_stat_button" name="ticket_rma_orders"
+                type="object" icon="fa-eject"
+                attrs="{'invisible':[('rma_count', '&lt;', 1)]}">
+                <field name="rma_count" string="RMA" widget="statinfo"/>
               </button>
           </xpath>
       </field>
   </record>
+
 </odoo>

@@ -13,6 +13,11 @@
         - Add a field for the responsible technician / team
         - Replace the built-in Kanban view
         - Repair reference = readonly
+
+        Helpdesk:
+        - Create Repair order from helpdesk ticket
+        - add smart button on ticket for repairs linked to that ticket
+        - add Status fields for repair and rma in helpdesk ticket
     """,
 
     'author': "Jan Beckhoff",
@@ -25,13 +30,14 @@
     'version': '11.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['mrp_repair'],
+    'depends': ['mrp_repair', 'helpdesk', 'rma'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
         'views/helpdesk_views.xml',
         'views/kanban_view.xml',
+        'views/rma_views.xml',
         'views/views.xml',
     ]
 }
