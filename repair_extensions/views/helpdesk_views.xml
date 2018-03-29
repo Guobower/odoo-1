@@ -2,7 +2,7 @@
 
   <!-- Helpdesk views -->
   <record id="helpdesk_ticket_update_customer" model="ir.ui.view">
-      <field name="name">helpdesk.ticket.repair.order.button</field>
+      <field name="name">helpdesk.ticket.status.update</field>
       <field name="model">helpdesk.ticket</field>
       <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
       <field name="arch" type="xml">
@@ -11,6 +11,19 @@
           </field>
       </field>
   </record>
+
+  <!-- TEst Project view -->
+  <record id="project_helpdesk_ticket" model="ir.ui.view">
+      <field name="name">project.task.helpdesk.ticket</field>
+      <field name="model">project.task</field>
+      <field name="inherit_id" ref="project.view_task_form2"/>
+      <field name="arch" type="xml">
+          <field name="sale_line_id" position="after">
+              <field name="helpdesk_ticket_id"/>
+          </field>
+      </field>
+  </record>
+
 
   <!-- Repair Order Views -->
 
@@ -47,6 +60,7 @@
           <field name="priority" position="after">
               <field name="repair_status" attrs="{'invisible':[('repair_status', '=', 'None')]}"/>
               <field name="rma_status" attrs="{'invisible':[('rma_status', '=', 'None')]}"/>
+              <field name="is_repair" widget="checkbox"/>
           </field>
       </field>
   </record>

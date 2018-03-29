@@ -3,3 +3,4 @@
 from . import models
 from . import helpdesk
 from . import rma
+from . import project

@@ -7,14 +7,15 @@ class Helpdesk(models.Model):
     status_update = fields.Boolean(string="Status Update", default=True,
                                     help="If the Box is deactivated, the customer is removed from the Followers list.")
 
-    repair_count = fields.Integer('Number of repairs for this ticket', compute="_compute_repair_count")
+    repair_count = fields.Integer('Number of repairs for this ticket', compute="_compute_repair_count", store=True)
     repair_orders = fields.One2many(comodel_name="mrp.repair", inverse_name="helpdesk_ticket_id")
     repair_status = fields.Char(compute="_compute_repair_status", string='Repair Status',
                                 help="This field will display the status of the lowest state found in attached repair orders.")
+    is_repair = fields.Boolean('Is a Repair Order?', default=False, compute="_create_task_for_repair_order", store=True)
 
     rma_count = fields.Integer('Number of RMAs for this ticket', compute="_compute_rma_count")
     rma_orders = fields.One2many(comodel_name="rma.order.line", inverse_name="helpdesk_ticket_id")
-    rma_status = fields.Char(compute="_compute_rma_status", string='RMA Status',
+    rma_status = fields.Char(compute="_compute_rma_status", string='RMA Status', store=True,
                                 help="This field will display the status of the lowest state found in attached RMA orders.")
 
     @api.multi
@@ -29,11 +30,14 @@ class Helpdesk(models.Model):
             #self.write({'message_follower_ids':[(4, self.partner_id.id)]})
             #self.message_follower_ids = [(4, self.partner_id.id)]
 
-### REPAIR
 
+### REPAIR
+    @api.one
+    @api.depends('repair_orders.state')
     def _compute_repair_count(self):
         cond = [('helpdesk_ticket_id', '=', self.id)]
         self.repair_count = len(self.env['mrp.repair'].search(cond))
+
 
     # opening repair tree view from ticket
     @api.multi
@@ -50,7 +54,7 @@ class Helpdesk(models.Model):
             'views': [(tree_view, 'tree'), (form_view, 'form')],
             'context': {'search_default_helpdesk_ticket_id': self.id}
         }
-    ### Preparation if repair state should be different to displayed state in helpdesk
+    ### Preparation if repair state should be different to displayed state in helpdesk, Slection for field
     """
     @api.multi
     def get_repair_state(self):
@@ -65,6 +69,7 @@ class Helpdesk(models.Model):
             ('done', 'Repaired'),
             ]
             """
+
     @api.multi
     @api.depends('repair_orders.state')
     def _compute_repair_status(self):
@@ -88,9 +93,30 @@ class Helpdesk(models.Model):
             else:
                 ticket.repair_status = 'None'
 
-#### RMA
+    # TODO Is it necessary to compute is_repair?
+    #TODO ist the depends working at all?
+    @api.multi
+    @api.depends('repair_orders')
+    def _create_task_for_repair_order(self):+
+        order_count = self.repair_orders.search_count([('helpdesk_ticket_id', '=', self.id)])
+        if order_count == 1 and self.is_repair == False:
+            task = self.env['project.task'].create({
+                'name': self.display_name,
+                'project_id': self.project_id.id,
+                'partner_id': self.partner_id.id,
+                'helpdesk_ticket_id': self.id,
+            })
+            self.is_repair = True
+            self.description = self.env['project.task'].search([('helpdesk_ticket_id', '=', self.id)], limit=1).name
+            self.task_id = self.env['project.task'].search([('helpdesk_ticket_id', '=', self.id)], limit=1)
+            self.task_id = task
+            #self.write({'task_id': self.env['project.task'].search([('helpdesk_ticket_id', '=', self.id)], limit=1).id})
 
+### RMA
+
+    @api.multi
     def _compute_rma_count(self):
+        pass
         cond = [('helpdesk_ticket_id', '=', self.id)]
         self.rma_count = len(self.env['rma.order.line'].search(cond))
 

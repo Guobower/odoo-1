@@ -30,7 +30,7 @@
     'version': '11.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['mrp_repair', 'helpdesk', 'rma'],
+    'depends': ['mrp_repair', 'helpdesk_timesheet', 'rma'],
 
     # always loaded
     'data': [
