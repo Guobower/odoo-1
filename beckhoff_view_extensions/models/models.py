@@ -16,6 +16,12 @@ class ProductTemplateChangeTrack(models.Model):
     name = fields.Char(track_visibility='OnChange')
     barcode = fields.Char(track_visibility='OnChange')
 
+    description_sale = fields.Text(copy=False)
+    description_purchase = fields.Text(copy=False)
+    description_picking = fields.Text(copy=False)
+    description_pickingin = fields.Text(copy=False)
+    description_pickingout = fields.Text(copy=False)
+
 class PartnerChangeData(models.Model):
     _inherit = 'res.partner'
 
@@ -37,11 +43,11 @@ class MoveLine(models.Model):
 
     partner_id = fields.Many2one(related="move_id.picking_partner_id", string="Partner")
 
-class SaleOrder(models.Mode):
+class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     @api.onchange('partner_id')
     def create(self, vals):
         result = super(SaleOrder, self).create(vals)
-        vals['partner_shipping_id'] = partner_id
+        vals['partner_shipping_id'] = partner_id.id
         return result
