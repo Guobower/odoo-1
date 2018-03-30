@@ -93,11 +93,9 @@ class Helpdesk(models.Model):
             else:
                 ticket.repair_status = 'None'
 
-    # TODO Is it necessary to compute is_repair?
-    #TODO ist the depends working at all?
-    @api.multi
+    @api.one
     @api.depends('repair_orders')
-    def _create_task_for_repair_order(self):+
+    def _create_task_for_repair_order(self):
         order_count = self.repair_orders.search_count([('helpdesk_ticket_id', '=', self.id)])
         if order_count == 1 and self.is_repair == False:
             task = self.env['project.task'].create({
@@ -106,11 +104,7 @@ class Helpdesk(models.Model):
                 'partner_id': self.partner_id.id,
                 'helpdesk_ticket_id': self.id,
             })
-            self.is_repair = True
-            self.description = self.env['project.task'].search([('helpdesk_ticket_id', '=', self.id)], limit=1).name
-            self.task_id = self.env['project.task'].search([('helpdesk_ticket_id', '=', self.id)], limit=1)
-            self.task_id = task
-            #self.write({'task_id': self.env['project.task'].search([('helpdesk_ticket_id', '=', self.id)], limit=1).id})
+            self.write({'task_id': task.id, 'is_repair': True})
 
 ### RMA
 

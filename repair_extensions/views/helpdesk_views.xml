@@ -58,9 +58,9 @@
               </button>
           </xpath>
           <field name="priority" position="after">
-              <field name="repair_status" attrs="{'invisible':[('repair_status', '=', 'None')]}"/>
-              <field name="rma_status" attrs="{'invisible':[('rma_status', '=', 'None')]}"/>
-              <field name="is_repair" widget="checkbox"/>
+              <field name="repair_status" attrs="{'invisible':['|',('repair_status', '=', 'None'), ('id', '=', False)]}"/>
+              <field name="rma_status" attrs="{'invisible':['|',('rma_status', '=', 'None'), ('id', '=', False)]}"/>
+              <field name="is_repair" widget="checkbox" invisible="1"/>
           </field>
       </field>
   </record>
