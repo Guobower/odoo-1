@@ -10,7 +10,7 @@
                         class="oe_stat_button"
                         icon="fa-pencil-square-o"
                         string="Origin Inv"
-                        attrs="{'invisible': [('invoice_line_id','=', False)]}">
+                        attrs="{'invisible': [('reference_move_id','=', False)]}">
                 </button>
             </button>
             <xpath expr="//field[@name='partner_id']" position="replace">
@@ -23,8 +23,10 @@
             <field name="partner_id" position="after">
                 <field name="reference_move_id"
                    options="{'no_create': True}"
-                   domain="[('picking_id.partner_id', '=', partner_id),                          
-                            ('state', '=', 'done')]"/>
+                   domain="['&amp;', '|', ('state', '=', 'done'), ('state', '=', 'done'), '|',
+                            ('picking_id.partner_id', '=', partner_id),
+                            ('picking_id.partner_id', 'child_of', partner_id)]"
+                   attrs="{'invisible': [('partner_id', '=', False)]}"/>
                 <field name="invoice_line_id"
                     options="{'no_create': True}"
                     domain="['|',
@@ -49,14 +51,6 @@
            <field name="quotation_notes" position="before">
                 <h3>Error Description</h3>
            </field>
-           <!-- This will invisible the filed when invoice_line_id is empty
-           <field name="product_id" position="attributes">
-                <attribute name="attrs">{'readonly': [
-                  ('invoice_line_id', '!=', False),
-                  ]}
-                </attribute>
-          </field>
-        -->
         </field>
     </record>
 
