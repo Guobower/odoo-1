@@ -66,4 +66,5 @@ class MrpRepair(models.Model):
     def _compute_margin(self):
         for order in self:
             order.margin = sum(order.mapped('fees_lines.margin')) + sum(order.mapped('operations.margin'))
-        self.margin_percent = self.margin / self.amount_untaxed * 100
+        if self.amount_untaxed > 0:
+            self.margin_percent = self.margin / self.amount_untaxed * 100

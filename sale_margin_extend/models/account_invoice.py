@@ -13,7 +13,7 @@ class AccountInvoiceLine(models.Model):
     margin = fields.Float('Margin', compute='_compute_margin', store=True,
         digits=dp.get_precision('Product Price'))
 
-    purchase_price = fields.Float('Cost Price', compute="_compute_margin" store=True,
+    purchase_price = fields.Float('Cost Price', compute="_compute_margin", store=True,
         digits=dp.get_precision('Product Price'))
 
     @api.multi
@@ -37,7 +37,7 @@ class AccountInvoice(models.Model):
         " the Unit Price and the cost price.")
     margin_percent = fields.Float(string="Margin (%)", compute="_compute_margin")
 
-    @api.multi
+    @api.one
     @api.depends('invoice_line_ids.margin')
     def _compute_margin(self):
         for order in self:
