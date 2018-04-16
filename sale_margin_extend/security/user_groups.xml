@@ -1,0 +1,7 @@
+<odoo>
+    <record id="groups_sale_margin" model="res.groups">
+        <field name="name">Margins on Documents</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+        <field name="comment">The User will see Margins on Sale Orders, PoS Orders, Invoices and Repair Orders.</field>
+    </record>
+</odoo>

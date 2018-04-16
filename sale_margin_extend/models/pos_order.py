@@ -10,16 +10,12 @@ import openerp.addons.decimal_precision as dp
 class PosOrderLine(models.Model):
     _inherit = 'pos.order.line'
 
-    # Columns Section
-    margin = fields.Float(
-        'Margin', compute='_compute_margin', store=True,
+    margin = fields.Float('Margin', compute='_compute_margin', store=True,
         digits=dp.get_precision('Product Price'))
 
-    purchase_price = fields.Float(
-        'Cost Price', compute='_compute_margin', store=True,
+    purchase_price = fields.Float('Cost Price', compute='_compute_margin', store=True,
         digits=dp.get_precision('Product Price'))
 
-    # Compute Section
     @api.multi
     @api.depends('product_id', 'qty', 'price_subtotal')
     def _compute_margin(self):
@@ -35,16 +31,16 @@ class PosOrderLine(models.Model):
 class PosOrder(models.Model):
     _inherit = 'pos.order'
 
-    # Columns Section
-    margin = fields.Float(
-        'Margin', compute='_compute_margin', store=True,
+    margin = fields.Float('Margin', compute='_compute_margin', store=True,
         digits=dp.get_precision('Product Price'),
         help="It gives profitability by calculating the difference between"
         " the Unit Price and the cost price.")
+    margin_percent = fields.Float(string="Margin (%)", compute="_compute_margin")
 
-    # Compute Section
-    @api.multi
+    @api.one
     @api.depends('lines.margin')
     def _compute_margin(self):
         for order in self:
             order.margin = sum(order.mapped('lines.margin'))
+        if self.amount_total > 0:
+            self.margin_percent = self.margin / (self.amount_total - self.amount_tax) * 100

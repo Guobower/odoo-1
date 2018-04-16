@@ -5,10 +5,12 @@
     <field name="inherit_id" ref="sale.view_order_form" />
     <field name="arch" type="xml">
         <xpath expr="//field[@name='margin']" position="after">
-            <field name="margin_percent" string="Margin (%)" widget="progressbar"/>
+            <field name="margin_percent" string="Margin (%)" widget="progressbar" groups="sale_margin_extend.groups_sale_margin"/>
+        </xpath>
+        <xpath expr="//field[@name='margin']" position="attributes">
+            <field name="groups">sale_margin_extend.groups_sale_margin</field>
         </xpath>
         <xpath expr="//field[@name='order_line']/tree/field[@name='purchase_price']" position="attributes">
-            <!--<attribute name="attrs">{'invisible': [('discount_total', '=', 0)]}</attribute> -->
             <attribute name="invisible">1</attribute>
         </xpath>
     </field>

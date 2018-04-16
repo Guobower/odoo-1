@@ -13,12 +13,15 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
         <field name="arch" type="xml">
             <xpath expr="//group[@name='order_total']" position="after">
                 <group name="margin">
-                    <field name="margin" widget='monetary'/>
+                    <field name="margin" widget='monetary' groups="sale_margin_extend.groups_sale_margin"/>
+                    <field name="margin_percent" widget="progressbar" groups="sale_margin_extend.groups_sale_margin"/>
                 </group>
             </xpath>
+            <!--
             <xpath expr="//field[@name='lines']/tree/field[@name='price_unit']" position="after">
                 <field name="purchase_price"/>
             </xpath>
+          -->
         </field>
     </record>
 

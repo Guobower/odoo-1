@@ -6,10 +6,7 @@
         Adds the margin calculation to PoS Orders, Repair Orders and Invoices""",
 
     'description': """
-        Todo:
-        - create security group and make all xml fields security group dependend
-        - account.invoice.line cost field is readonly
-        - test repair fees and pos Margin
+        Inspired by Margins in Odoo from Odoo SA and Sylvain LE GAL OCA/pos_order_margin (10.0)
     """,
 
     'author': "Jan Beckhoff",
@@ -26,7 +23,8 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
+        'security/user_groups.xml',
         'views/account_invoice_views.xml',
         'views/pos_order_views.xml',
         'views/repair_views.xml',
