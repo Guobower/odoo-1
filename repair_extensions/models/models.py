@@ -12,6 +12,10 @@ class RepairOrder(models.Model):
     quotation_notes = fields.Text('Error Description', required=True,
         placeholder="Add error description and other notes here...")
 
+    reference_move_id = fields.Many2one(
+        comodel_name='stock.move', string='Originating Stock Move',
+        copy=False,
+        readonly=True, states={'draft': [('readonly', False)]},)
     invoice_line_id = fields.Many2one(comodel_name="account.invoice.line",
         string="Products from Invoices", ondelete="restrict", index=True,
         readonly=True, states={'draft': [('readonly', False)]},)
@@ -38,6 +42,10 @@ class RepairOrder(models.Model):
     @api.onchange('invoice_line_id')
     def _onchange_invoice_line_id(self):
         self.product_id = self.invoice_line_id.product_id.id
+
+    @api.onchange('reference_move_id')
+    def _onchange_invoice_line_id(self):
+        self.product_id = self.reference_move_id.product_id.id
 
     @api.multi
     def action_view_invoice(self):

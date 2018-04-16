@@ -21,6 +21,10 @@
                 <field name="product_category" nolabel="1"/>
             </field>
             <field name="partner_id" position="after">
+                <field name="reference_move_id"
+                   options="{'no_create': True}"
+                   domain="[('picking_id.partner_id', '=', partner_id),                          
+                            ('state', '=', 'done')]"/>
                 <field name="invoice_line_id"
                     options="{'no_create': True}"
                     domain="['|',
