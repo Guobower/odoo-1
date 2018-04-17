@@ -10,6 +10,7 @@
                         class="oe_stat_button"
                         icon="fa-pencil-square-o"
                         string="Origin Inv"
+                        context="{'search_default_partner_id': partner_id}"
                         attrs="{'invisible': [('reference_move_id','=', False)]}">
                 </button>
             </button>
@@ -54,16 +55,39 @@
         </field>
     </record>
 
-    <!-- Add helpdesk to search view to be able to use search_default -->
+    <!-- Search views -->
     <record id="Helpdesk_ticket_repair_search" model="ir.ui.view">
         <field name="name">Helpdesk Ticket</field>
         <field name="model">mrp.repair</field>
         <field name="inherit_id" ref="mrp_repair.view_repair_order_form_filter"/>
         <field name="arch" type="xml">
+            <!-- Add helpdesk to search view to be able to use search_default -->
             <field name="name" position="after">
-                  <field name="helpdesk_ticket_id" string="Helpdesk Ticket" invisible="1"/>
+                <field name="helpdesk_ticket_id" string="Helpdesk Ticket" invisible="1"/>
             </field>
-        </field>
+            <field name="partner_id" position="after">
+                <field name="technician" string="Technician"/>
+            </field>
+            <filter name="activities_my" position="after">
+                <filter string="My Repair Orders" name="user_repair_orders" domain="[('technician','=',uid)]"/>
+            </filter>
+            <xpath expr="//group" position="inside">
+                <filter string="Technician" domain="[]" context="{'group_by':'technician'}"/>
+            </xpath>
+      </field>
+    </record>
+
+    <!-- List Views -->
+    <record id="repair_extensions_list_view" model="ir.ui.view">
+        <field name="name">Repair Orders</field>
+        <field name="model">mrp.repair</field>
+        <field name="inherit_id" ref="mrp_repair.view_repair_order_tree"/>
+        <field name="arch" type="xml">
+            <!-- Add helpdesk to search view to be able to use search_default -->
+            <field name="state" position="after">
+                <field name="technician" string="Technician"/>
+            </field>
+      </field>
     </record>
 
     <!-- Repair Tag Views -->

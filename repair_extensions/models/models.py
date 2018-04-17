@@ -44,17 +44,24 @@ class RepairOrder(models.Model):
         self.product_id = self.invoice_line_id.product_id.id
 
     @api.onchange('reference_move_id')
-    def _onchange_invoice_line_id(self):
+    def _onchange_reference_move_id(self):
         self.product_id = self.reference_move_id.product_id.id
 
     @api.multi
     def action_view_invoice(self):
         action = self.env.ref('account.action_invoice_tree')
         result = action.read()[0]
-        res = self.env.ref('account.invoice_form', False)
-        result['views'] = [(res and res.id or False, 'form')]
-        result['view_id'] = res and res.id or False
-        result['res_id'] = self.invoice_line_id.invoice_id.id
+        invoice_ids = picking_ids = []
+        for line in self.reference_move_id.sale_line_id.order_id.invoice_ids:
+            invoice_ids.append(line.id)
+        invoices = list(set(invoice_ids))
+        if invoices:
+            if len(invoices) > 1:
+                result['domain'] = [('id', 'in', invoices)]
+            else:
+                res = self.env.ref('account.invoice_form', False)
+                result['views'] = [(res and res.id or False, 'form')]
+                result['res_id'] = invoices[0]
         return result
 
     class Tag(models.Model):
