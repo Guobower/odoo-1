@@ -78,6 +78,7 @@
     </record>
 
     <!-- List Views -->
+    <!-- TODO: Set Kanban as default -->
     <record id="repair_extensions_list_view" model="ir.ui.view">
         <field name="name">Repair Orders</field>
         <field name="model">mrp.repair</field>
@@ -114,5 +115,73 @@
         </field>
     </record>
 
+    <record id="action_repair_tags" model="ir.actions.act_window">
+        <field name="name">Repair Order Tags</field>
+        <field name="res_model">mrp.repair.tag</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+              Click to create a new Tag
+            </p><p>
+              Tags allow to organize Repair Orders
+            </p>
+        </field>
+    </record>
+
+    <!-- Stage Menu Views -->
+    <record id="mrp_repair_stages_view_tree" model="ir.ui.view">
+        <field name="name">mrp.repair.stages.tree</field>
+        <field name="model">mrp.repair.stage</field>
+        <field name="arch" type="xml">
+            <tree string="Stages" >
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="is_close"/>
+                <field name="fold"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="mrp_repair_stage_view_form" model="ir.ui.view">
+        <field name="name">mrp.repair.stage.form</field>
+        <field name="model">mrp.repair.stage</field>
+        <field name="arch" type="xml">
+            <form string="Stage Search">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="sequence" groups="base.group_no_one"/>
+                        </group>
+                        <group>
+                            <field name="is_close"/>
+                            <field name="fold"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_repair_stages" model="ir.actions.act_window">
+        <field name="name">Repair Order Stages</field>
+        <field name="res_model">mrp.repair.stage</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+              Click to create a new Stages
+            </p><p>
+              Stages allow to organize Repair Orders
+            </p>
+        </field>
+    </record>
+
+    <!-- Menuitems -->
+    <menuitem id="repair_menu_config" name="Configuration" sequence="100" parent="mrp_repair.menu_repair_order"
+        groups="base.group_system"/>
+    <menuitem id="repair_menu_tags" name="Tags" sequence="90" parent="repair_menu_config" action="action_repair_tags"/>
+    <menuitem id="repair_menu_stages" name="Stages" sequence="100" parent="repair_menu_config" action="action_repair_stages"/>
 
 </odoo>

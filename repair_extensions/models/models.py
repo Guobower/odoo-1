@@ -31,7 +31,7 @@ class RepairOrder(models.Model):
     helpdesk_ticket_id = fields.Many2one(comodel_name="helpdesk.ticket", string="Helpdesk Ticket")
 
     color = fields.Integer('Color Index', default=0)
-    stage_id = fields.Many2one(comodel_name='mrp.repair.stage', string='Stage', track_visibility='onchange')
+    stage_id = fields.Many2one(comodel_name='mrp.repair.stage', group_expand='_read_group_stage_ids', string='Stage', track_visibility='onchange')
     currency_id = fields.Many2one(comodel_name="res.currency", string="Currency",
                                     default=lambda self: self.env.user.company_id.currency_id)
 
@@ -64,6 +64,12 @@ class RepairOrder(models.Model):
                 result['views'] = [(res and res.id or False, 'form')]
                 result['res_id'] = invoices[0]
         return result
+
+    # Required to maintain empty stages in Kanban view
+    @api.model
+    def _read_group_stage_ids(self, stages, domain, order):
+        stage_ids = self.env['mrp.repair.stage'].search([])
+        return stage_ids
 
     class RepairStage(models.Model):
         _name = 'mrp.repair.stage'
