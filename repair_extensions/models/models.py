@@ -31,6 +31,7 @@ class RepairOrder(models.Model):
     helpdesk_ticket_id = fields.Many2one(comodel_name="helpdesk.ticket", string="Helpdesk Ticket")
 
     color = fields.Integer('Color Index', default=0)
+    stage_id = fields.Many2one(comodel_name='mrp.repair.stage', string='Stage', track_visibility='onchange')
     currency_id = fields.Many2one(comodel_name="res.currency", string="Currency",
                                     default=lambda self: self.env.user.company_id.currency_id)
 
@@ -63,6 +64,17 @@ class RepairOrder(models.Model):
                 result['views'] = [(res and res.id or False, 'form')]
                 result['res_id'] = invoices[0]
         return result
+
+    class RepairStage(models.Model):
+        _name = 'mrp.repair.stage'
+        _description = 'Stage'
+        _order = 'sequence, id'
+
+        name = fields.Char(required=True, translate=True)
+        sequence = fields.Integer('Sequence', default=10)
+        is_close = fields.Boolean('Closing Kanban Stage', help='Tickets in this stage are considered done.')
+        fold = fields.Boolean('Folded', help="Folded in Kanban view")
+
 
     class Tag(models.Model):
         _name = 'mrp.repair.tag'

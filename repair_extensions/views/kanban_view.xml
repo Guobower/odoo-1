@@ -6,8 +6,9 @@
         <field name="model">mrp.repair</field>
         <field name="view_type">tree,kanban</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="state" class="o_kanban_small_column o_opportunity_kanban">
+            <kanban default_group_by="stage_id" class="o_kanban_small_column o_opportunity_kanban" quick_create="false">
                 <field name="state"/>
+                <field name="stage_id"/>
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="product_id"/>
@@ -31,17 +32,17 @@
                                 <div>
                                     <field name="tag_ids"/>
                                 </div>
+                                <div>
+                                    <strong><field name="name"/></strong>
+                                </div>
                                 <div class="row">
                                     <div class="col-xs-6">
-                                        <strong><field name="name"/></strong>
+                                        <strong><field name="product_id"/></strong>
                                     </div>
                                     <div class="col-xs-6 text-right">
                                         <span class="label label-default"><field name="state" widget="kanban_label_selection"
                                             options="{'classes':{'draft': 'info', 'cancel': 'danger', 'done': 'success', 'under_repair': 'default'}}"/></span>
                                     </div>
-                                </div>
-                                <div>
-                                    <field name="product_id"/>
                                 </div>
                                 <div>
                                     <field name="partner_id"/>
