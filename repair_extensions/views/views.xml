@@ -85,7 +85,6 @@
         <field name="inherit_id" ref="mrp_repair.view_repair_order_tree"/>
         <field name="arch" type="xml">
             <!-- Add helpdesk to search view to be able to use search_default -->
-            <field name="priority" eval="1"/>
             <field name="state" position="after">
                 <field name="technician" string="Technician"/>
             </field>

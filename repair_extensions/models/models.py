@@ -47,6 +47,9 @@ class RepairOrder(models.Model):
     @api.onchange('reference_move_id')
     def _onchange_reference_move_id(self):
         self.product_id = self.reference_move_id.product_id.id
+        for move in self.reference_move_id:
+            lot_ids = [x.lot_id.id for x in move.move_line_ids if x.lot_id]
+            return {'domain': {'lot_id': [('id', 'in', lot_ids)]}}
 
     @api.multi
     def action_view_invoice(self):
