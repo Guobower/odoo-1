@@ -150,6 +150,10 @@ class RepairOrder(models.Model):
             """
         return res
 
+    # Overwrite build-in function to deactivcate insufficent stock popu on confirmation
+    def action_validate(self):
+        return self.action_repair_confirm()
+
     class RepairStage(models.Model):
         _name = 'mrp.repair.stage'
         _description = 'Stage'
