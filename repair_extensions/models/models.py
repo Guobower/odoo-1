@@ -32,6 +32,7 @@ class RepairOrder(models.Model):
 
     color = fields.Integer('Color Index', default=0)
     stage_id = fields.Many2one(comodel_name='mrp.repair.stage', group_expand='_read_group_stage_ids', string='Stage', track_visibility='onchange')
+    repair_type = fields.Many2one(comodel_name='mrp.repair.type', string="Repair Type", track_visibility='onchange')
     currency_id = fields.Many2one(comodel_name="res.currency", string="Currency",
                                     default=lambda self: self.env.user.company_id.currency_id)
 
@@ -68,6 +69,16 @@ class RepairOrder(models.Model):
                 result['res_id'] = invoices[0]
         return result
 
+    @api.onchange('repair_type')
+    def _onchange_repair_type(self):
+        if self.repair_type:
+            self.invoice_method = self.repair_type.invoice_method
+            self.partner_invoice_id = self.repair_type.invoice_address.id
+            self.tag_ids = [(6,0,self.repair_type.tag_ids.ids)]
+            color = self.repair_type.kanban_color
+            self.color = color
+            self.technician = self.repair_type.technician.id
+
     # Required to maintain empty stages in Kanban view
     @api.model
     def _read_group_stage_ids(self, stages, domain, order):
@@ -83,6 +94,29 @@ class RepairOrder(models.Model):
         sequence = fields.Integer('Sequence', default=10)
         is_close = fields.Boolean('Closing Kanban Stage', help='Tickets in this stage are considered done.')
         fold = fields.Boolean('Folded', help="Folded in Kanban view")
+
+    class RepairType(models.Model):
+        _name = 'mrp.repair.type'
+        _description = 'Repair Type'
+        _order = 'sequence, id'
+
+        active = fields.Boolean('Active', default=True)
+        name = fields.Char(required=True, translate=True)
+        sequence = fields.Integer('Sequence', default=10)
+        invoice_method = fields.Selection(string='Invoice Method', selection='repair_type_sel')
+        invoice_address = fields.Many2one('res.partner', string='Invoice Address')
+        tag_ids = fields.Many2many('mrp.repair.tag', string='Tags')
+        kanban_color = fields.Integer('Color Index')
+        technician = fields.Many2one('res.users', string='Technician', help="Sets a default Technician for every Repair Order of this type.")
+
+        @api.model
+        def repair_type_sel(self):
+            return [
+                ('none', 'No Invoice'),
+                ('b4repair', 'Before Repair'),
+                ('after_repair', 'After Repair'),
+                ]
+
 
 
     class Tag(models.Model):
