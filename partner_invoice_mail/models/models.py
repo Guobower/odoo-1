@@ -5,7 +5,7 @@ from odoo import models, fields, api
 class PartnerInvoiceMail(models.Model):
      _inherit = 'res.partner'
 
-     partner_invoice_mail = fields.Boolean(string="Invoices via Mail", help="If this box is checked, a notification will display on the invoice reminding the user to send the invoice via Mail.")
+     partner_invoice_mail = fields.Boolean(string="Invoices via Mail", track_visibility="OnChange", help="If this box is checked, a notification will display on the invoice reminding the user to send the invoice via Mail.")
 
 class PartnerAccountInvoiceMail(models.Model):
     _inherit = 'account.invoice'
