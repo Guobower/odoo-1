@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 10.0\n"
+"Project-Id-Version: Odoo Server 11.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-25 20:34+0000\n"
-"PO-Revision-Date: 2017-06-25 20:34+0000\n"
+"POT-Creation-Date: 2018-05-11 20:46+0000\n"
+"PO-Revision-Date: 2018-05-11 20:46+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -17,8 +17,44 @@ msgstr ""
 
 #. module: beckhoff_po_customer
 #: model:ir.model.fields,field_description:beckhoff_po_customer.field_res_partner_customer_purchase_order
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_res_users_customer_purchase_order
 msgid "# of Purchase Orders"
 msgstr "# Kundenbestellungen"
+
+#. module: beckhoff_po_customer
+#: model:ir.ui.view,arch_db:beckhoff_po_customer.view_order_form_new
+msgid "<span class=\"o_stat_text\">Purchase Orders</span>"
+msgstr "<span class=\"o_stat_text\">Bestellungen</span>"
+
+#. module: beckhoff_po_customer
+#: model:ir.ui.view,arch_db:beckhoff_po_customer.purchase_order_wizard_form
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_wizard_company_id
+msgid "Company"
+msgstr "Unternehmen"
+
+#. module: beckhoff_po_customer
+#: model:ir.model,name:beckhoff_po_customer.model_res_partner
+msgid "Contact"
+msgstr "Kontakt"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,help:beckhoff_po_customer.field_purchase_order_line_wizard_purchase_price
+msgid "Cost used for stock valuation. Also used as a base price for pricelists. Expressed in the default unit of measure of the product."
+msgstr "Cost used for stock valuation. Also used as a base price for pricelists. Expressed in the default unit of measure of the product."
+
+#. module: beckhoff_po_customer
+#: model:ir.ui.view,arch_db:beckhoff_po_customer.view_order_form_new
+msgid "Create Purchase Order"
+msgstr "Bestellungen erstellen"
+
+#. module: beckhoff_po_customer
+#: model:ir.ui.view,arch_db:beckhoff_po_customer.purchase_order_wizard_form
+msgid "Create Purchase Orders"
+msgstr "Bestellungen erstellen"
 
 #. module: beckhoff_po_customer
 #: model:ir.actions.act_window,help:beckhoff_po_customer.customer_purchase_orders
@@ -26,15 +62,122 @@ msgid "Create a Quotation, the first step of a new sale."
 msgstr "Erstelle ein Angebot, der erste Schritt zu einem neuen Verkauf."
 
 #. module: beckhoff_po_customer
+#: code:addons/beckhoff_po_customer/models/sale_order.py:27
+#, python-format
+msgid "Create wizard"
+msgstr "Wizard: Einkaufsauftrag erstellen"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_create_uid
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_wizard_create_uid
+msgid "Created by"
+msgstr "Erstellt von"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_create_date
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_wizard_create_date
+msgid "Created on"
+msgstr "Erstellt am"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_wizard_currency_id
+msgid "Currency"
+msgstr "Währung"
+
+#. module: beckhoff_po_customer
 #: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_wizard_partner_id
 #: model:ir.ui.view,arch_db:beckhoff_po_customer.purchase_order_search_add
 msgid "Customer"
 msgstr "Kunde"
 
 #. module: beckhoff_po_customer
+#: model:ir.ui.view,arch_db:beckhoff_po_customer.purchase_order_search_add
 #: model:ir.ui.view,arch_db:beckhoff_po_customer.res_partner_purchase_order_button
 msgid "Customer Orders"
 msgstr "Kundenbestellungen"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,help:beckhoff_po_customer.field_purchase_order_wizard_date_order
+msgid "Depicts the date where the Quotation should be validated and converted into a purchase order."
+msgstr "Bestimmt das Datum, indem eine Angebotsanfrage bestätigt und in eine Bestellung gewandelt werden sollte."
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_name
+msgid "Description"
+msgstr "Beschreibung"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_display_name
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_wizard_display_name
+msgid "Display Name"
+msgstr "Anzeigename"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_date_end
+msgid "End Date"
+msgstr "Enddatum"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,help:beckhoff_po_customer.field_purchase_order_line_wizard_date_end
+msgid "End date for this vendor price"
+msgstr "Enddatum dieses Lieferantenpreises"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_sale_order_line_forecasted_qty
+msgid "Forecast Quantity"
+msgstr "Prognostizierter Bestand"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,help:beckhoff_po_customer.field_sale_order_line_forecasted_qty
+msgid "Forecast quantity (computed as Quantity On Hand - Outgoing + Incoming)\n"
+"In a context with a single Stock Location, this includes goods stored in this location, or any of its children.\n"
+"In a context with a single Warehouse, this includes goods stored in the Stock Location of this Warehouse, or any of its children.\n"
+"Otherwise, this includes goods stored in any Stock Location with 'internal' type."
+msgstr "Prognostizierter Bestand (berechnet als tatsächlicher Bestand + Zugänge - Abgänge)\n"
+"Im Kontext mit einem einzigen Lagerort beinhaltet dies die Menge dieses oder eines untergeordneten Lagerorts.\n"
+"Im Kontext mit einem einzigen Lager, beinhaltet dies den Bestand auf dem Lagerort für dieses Lager, oder den \n"
+"untergeordneten Lagerorten. Andernfalls ergibt sich die Menge aus den Beständen aller Lagerorte des Typs\n"
+"\"Intern\"."
+
+#. module: beckhoff_po_customer
+#: model:ir.model,name:beckhoff_po_customer.model_purchase_order_wizard
+msgid "Generate Purchase Order from Sale Order"
+msgstr "Erstellen von Bestellungen aus einem Verkaufsauftrag"
+
+#. module: beckhoff_po_customer
+#: model:ir.actions.act_window,name:beckhoff_po_customer.act_window_po_from_so
+msgid "Generate Purchase order"
+msgstr "Bestellungen erstellen"
+
+#. module: beckhoff_po_customer
+#: model:ir.actions.act_window,name:beckhoff_po_customer.action_po_from_so
+msgid "Generate Purchase order from the Sale Order"
+msgstr "Erstellen von Bestellungen aus einem Verkaufsauftrag"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_id
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_wizard_id
+msgid "ID"
+msgstr "ID"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard___last_update
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_wizard___last_update
+msgid "Last Modified on"
+msgstr "Zuletzt geändert am"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_write_uid
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_wizard_write_uid
+msgid "Last Updated by"
+msgstr "Zuletzt aktualisiert durch"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_write_date
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_wizard_write_date
+msgid "Last Updated on"
+msgstr "Zuletzt aktualisiert am"
 
 #. module: beckhoff_po_customer
 #: model:ir.actions.act_window,name:beckhoff_po_customer.customer_purchase_orders
@@ -42,24 +185,199 @@ msgid "List of Customer Orders"
 msgstr "Kundenbestellungen"
 
 #. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_mto_product
+msgid "MTO"
+msgstr "MTO"
+
+#. module: beckhoff_po_customer
+#: code:addons/beckhoff_po_customer/wizard/purchase_order_wizard.py:88
+#, python-format
+msgid "Make To Order"
+msgstr "Beschaffe von Auftrag"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,help:beckhoff_po_customer.field_purchase_order_line_wizard_mto_product
+msgid "Make To Order product"
+msgstr "Dieses Produkt wird bereits automatisch mit der Bestätigung der Bestellung bestellt."
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,help:beckhoff_po_customer.field_purchase_order_sale_order_id
+#: model:ir.model.fields,help:beckhoff_po_customer.field_purchase_order_wizard_sale_order_id
+msgid "Not empty if an origin for purchase order was sale order"
+msgstr "Feld wird nur gefüllt, wenn der Einkaufsauftrag aus einem Verkaufsauftrag entstanden ist."
+
+#. module: beckhoff_po_customer
 #: model:ir.actions.act_window,help:beckhoff_po_customer.customer_purchase_orders
 msgid "Note that once a Quotation becomes a Sale Order, it will be moved from the Quotations list to the Sales Order list."
 msgstr "Beachten Sie dass wenn ein Angebot ein Verkaufsauftrag wird, wird es von der Angebotsliste in die Verkaufsauftragsliste verschoben."
 
 #. module: beckhoff_po_customer
-#: model:ir.model,name:beckhoff_po_customer.model_res_partner
-msgid "Partner"
-msgstr "Partner"
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_wizard_date_order
+msgid "Order Date"
+msgstr "Bestelldatum"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_wizard_order_line_ids
+msgid "Order Lines"
+msgstr "Auftragszeilen"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_order_id
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_wizard_name
+msgid "Order Reference"
+msgstr "Auftragsreferenz"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_seller_ids
+msgid "Possible Vendors"
+msgstr "Eingetragene Lieferanten"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_product_id
+msgid "Product"
+msgstr "Produkt"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_product_uom
+msgid "Product Unit of Measure"
+msgstr "Produkteinheit"
+
+#. module: beckhoff_po_customer
+#: model:ir.ui.view,arch_db:beckhoff_po_customer.purchase_order_wizard_form
+msgid "Products"
+msgstr "Produkte"
 
 #. module: beckhoff_po_customer
 #: model:ir.model,name:beckhoff_po_customer.model_purchase_order
+#: model:ir.ui.view,arch_db:beckhoff_po_customer.purchase_order_tree_wo_create
+#: model:ir.ui.view,arch_db:beckhoff_po_customer.purchase_order_wizard_form
 msgid "Purchase Order"
 msgstr "Beschaffungsauftrag"
 
 #. module: beckhoff_po_customer
+#: model:ir.model,name:beckhoff_po_customer.model_purchase_order_line_wizard
+#: model:ir.ui.view,arch_db:beckhoff_po_customer.purchase_order_wizard_form
+msgid "Purchase Order Lines"
+msgstr "Bestellpositionen"
+
+#. module: beckhoff_po_customer
+#: model:ir.actions.act_window,name:beckhoff_po_customer.action_purchased_orders
+msgid "Purchase Orders"
+msgstr "Bestellungen"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_product_qty_sold
+msgid "Quantity Sold"
+msgstr "Verkaufte Anzahl"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_sale_order_purchased_orders
+msgid "Quantity of Purchase Orders, based on that Sale Order"
+msgstr "Anzahl der Bestellungen, die aus diesem Verkaufsauftrag entstanden sind"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_product_qty_to_order
+msgid "Quantity to Order"
+msgstr "Zu bestellende Menge"
+
+#. module: beckhoff_po_customer
+#: model:ir.model,name:beckhoff_po_customer.model_sale_order
+msgid "Quotation"
+msgstr "Angebot"
+
+#. module: beckhoff_po_customer
+#: model:ir.ui.view,arch_db:beckhoff_po_customer.purchase_order_wizard_form
+msgid "Red color indicates the lines from which orders will be created"
+msgstr "Rot gefärbte Zeilen zeigen die Produkte, für die ein Einkaufsauftrag erstellt wird"
+
+#. module: beckhoff_po_customer
+#: model:ir.ui.view,arch_db:beckhoff_po_customer.purchase_order_tree_wo_create
+msgid "Reference"
+msgstr "Referenz"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_sale_order_id
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_wizard_sale_order_id
+msgid "Sale Order"
+msgstr "Verkaufsauftrag"
+
+#. module: beckhoff_po_customer
+#: model:ir.model,name:beckhoff_po_customer.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Auftragsposition"
+
+#. module: beckhoff_po_customer
 #: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_salesperson
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_wizard_salesperson_id
+#: model:ir.ui.view,arch_db:beckhoff_po_customer.purchase_order_search_add
 msgid "Salesperson"
 msgstr "Verkäufer"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_salesteam_id
+#: model:ir.ui.view,arch_db:beckhoff_po_customer.purchase_order_search_add
+msgid "Salesteam"
+msgstr "Verkaufsteam"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_date_planned
+msgid "Scheduled Date"
+msgstr "Geplantes Datum"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_date_start
+msgid "Start Date"
+msgstr "Startdatum"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,help:beckhoff_po_customer.field_purchase_order_line_wizard_date_start
+msgid "Start date for this vendor price"
+msgstr "Anfangsdatum dieses Lieferantenpreises"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_taxes_id
+msgid "Taxes"
+msgstr "Steuern"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_total_price
+msgid "Total Net Price"
+msgstr "Nettopreis"
+
+#. module: beckhoff_po_customer
+#: model:ir.ui.view,arch_db:beckhoff_po_customer.purchase_order_tree_wo_create
+msgid "Total Untaxed amount"
+msgstr "Nettobetrag"
+
+#. module: beckhoff_po_customer
+#: model:ir.ui.view,arch_db:beckhoff_po_customer.purchase_order_tree_wo_create
+msgid "Total amount"
+msgstr "Gesamtbetrag"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_purchase_price
+msgid "Unit Cost"
+msgstr "Stückpreis"
+
+#. module: beckhoff_po_customer
+#: model:ir.ui.view,arch_db:beckhoff_po_customer.purchase_order_tree_wo_create
+msgid "Untaxed"
+msgstr "Nettobetrag"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_partner_id
+msgid "Vendor"
+msgstr "Lieferant"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,help:beckhoff_po_customer.field_purchase_order_line_wizard_partner_id
+msgid "Vendor of this product"
+msgstr "Lieferant des Produktes"
+
+#. module: beckhoff_po_customer
+#: model:ir.model.fields,field_description:beckhoff_po_customer.field_purchase_order_line_wizard_supplier_id
+msgid "Vendor/Supplier"
+msgstr "Lieferant"
 
 #. module: beckhoff_po_customer
 #: model:ir.actions.act_window,help:beckhoff_po_customer.customer_purchase_orders

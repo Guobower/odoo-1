@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 
 from odoo import models, fields, api
 
@@ -7,8 +8,11 @@ class CustomerToPo(models.Model):
 
     customer = fields.Many2one('res.partner', 'Customer', track_visibility='OnChange')
     salesperson = fields.Many2one('res.users','Salesperson', track_visibility='OnChange')
+    salesteam_id = fields.Many2one('crm.team', string='Salesteam')
+    sale_order_id = fields.Many2one('sale.order', string="Sale Order",
+                                    help="Not empty if an origin for purchase order was sale order")
 
-    # Remove the total amount from the purchase order path 
+    # Remove the total amount from the purchase order path
     @api.multi
     @api.depends('name', 'partner_ref')
     def name_get(self):
@@ -21,6 +25,10 @@ class CustomerToPo(models.Model):
                 name += ' ' #+ formatLang(self.env,  po.amount_total, currency_obj=po.currency_id)
             result.append((po.id, name))
         return result
+
+    @api.onchange('salesperson')
+    def _onchange_salesperson(self):
+        self.salesteam_id = self.salesperson.sale_team_id.id
 
 class CustomerPoCounter(models.Model):
     _inherit = 'res.partner'

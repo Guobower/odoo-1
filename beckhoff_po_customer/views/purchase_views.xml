@@ -1,3 +1,4 @@
+
 <odoo>
   <data>
 
@@ -10,6 +11,7 @@
         <xpath expr="//field[@name='date_order']" position="after">
             <field name="customer" domain="[('customer', '=', True)]" options="{'no_quick_create':True}"/>
             <field name="salesperson" options="{'no_quick_create':True,'no_create_edit':True}"/>
+            <field name="salesteam_id" invisible="1"/>
         </xpath>
         <xpath expr="//field[@name='amount_untaxed']" position="attributes">
             <attribute name="groups">purchase.group_purchase_manager</attribute>
@@ -40,6 +42,7 @@
         </xpath>
         <xpath expr="//field[@name='origin']" position="before">
             <field name="salesperson"/>
+            <field name="salesteam_id" invisible="1"/>
         </xpath>
         <xpath expr="//field[@name='amount_total']" position="attributes">
             <attribute name="groups">purchase.group_purchase_manager</attribute>
@@ -59,12 +62,14 @@
               <field name="partner_id" position="after">
                   <field name="customer" operator="child_of"/>
                   <field name="salesperson"/>
+                  <field name="salesteam_id"/>
                   <field name="partner_ref"/>
               </field>
               <search>
                   <filter name="customer_groupby" string="Customer" context="{'group_by':'customer'}"/>
-                  <filter name="customer_filter" string="Customer" domain="[('customer','!=', False)]"/>
-              <!--<filter name="salesperson" string="Salesperson" context="{'group_by':'salesperson'}"/>-->
+                  <filter name="customer_filter" string="Customer Orders" domain="[('customer','!=', False)]"/>
+                  <filter name="salesperson_groupby" string="Salesperson" context="{'group_by':'salesperson'}"/>
+                  <filter name="salesteam_id_groupby" string="Salesteam" context="{'group_by':'salesteam_id'}"/>
               </search>
         </field>
     </record>
