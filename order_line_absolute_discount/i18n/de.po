@@ -1,0 +1,92 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* order_line_absolute_discount
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-05-13 16:42+0000\n"
+"PO-Revision-Date: 2018-05-13 16:42+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: order_line_absolute_discount
+#: model:ir.model.fields,field_description:order_line_absolute_discount.field_account_invoice_discount_total
+#: model:ir.model.fields,field_description:order_line_absolute_discount.field_sale_order_discount_total
+#: model:ir.ui.view,arch_db:order_line_absolute_discount.invoice_line_absolut_discount
+#: model:ir.ui.view,arch_db:order_line_absolute_discount.so_line_absolute_discount
+msgid "Discount"
+msgstr "Rabatt"
+
+#. module: order_line_absolute_discount
+#: model:ir.model.fields,field_description:order_line_absolute_discount.field_purchase_order_line_discount
+msgid "Discount (%)"
+msgstr "Rabatt (%)"
+
+#. module: order_line_absolute_discount
+#: model:ir.model.fields,field_description:order_line_absolute_discount.field_account_invoice_line_discount_absolute
+#: model:ir.model.fields,field_description:order_line_absolute_discount.field_purchase_order_line_discount_absolute
+#: model:ir.model.fields,field_description:order_line_absolute_discount.field_sale_order_line_discount_absolute
+msgid "Discount (Euro)"
+msgstr "Rabatt (Euro)"
+
+#. module: order_line_absolute_discount
+#: model:ir.model,name:order_line_absolute_discount.model_account_invoice
+msgid "Invoice"
+msgstr "Rechnung"
+
+#. module: order_line_absolute_discount
+#: model:ir.model,name:order_line_absolute_discount.model_account_invoice_line
+msgid "Invoice Line"
+msgstr "Rechungsposition"
+
+#. module: order_line_absolute_discount
+#: model:ir.model.fields,help:order_line_absolute_discount.field_purchase_order_line_discount_absolute
+msgid "Only one discount mode can be active for a purchase order line."
+msgstr "Es kann nur ein absoluter (€) oder relativer (%) Rabatt pro Zeile gegeben werden."
+
+#. module: order_line_absolute_discount
+#: model:ir.model.fields,help:order_line_absolute_discount.field_sale_order_line_discount_absolute
+msgid "Only one discount mode can be active for a sale order line."
+msgstr "Es kann nur ein absoluter (€) oder relativer (%) Rabatt pro Zeile gegeben werden."
+
+#. module: order_line_absolute_discount
+#: model:ir.model.fields,help:order_line_absolute_discount.field_account_invoice_line_discount_absolute
+msgid "Only one discount mode can be active for an invoice line."
+msgstr "Es kann nur ein absoluter (€) oder relativer (%) Rabatt pro Zeile gegeben werden."
+
+#. module: order_line_absolute_discount
+#: code:addons/order_line_absolute_discount/models/sale.py:45
+#, python-format
+msgid "Please define income account for this product: \"%s\" (id:%d) - or for its category: \"%s\"."
+msgstr "Please define income account for this product: \"%s\" (id:%d) - or for its category: \"%s\"."
+
+#. module: order_line_absolute_discount
+#: model:ir.model,name:order_line_absolute_discount.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr "Bestellposition"
+
+#. module: order_line_absolute_discount
+#: model:ir.model,name:order_line_absolute_discount.model_sale_order
+msgid "Quotation"
+msgstr "Angebot"
+
+#. module: order_line_absolute_discount
+#: model:ir.model,name:order_line_absolute_discount.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Auftragsposition"
+
+#. module: order_line_absolute_discount
+#: model:ir.model.fields,help:order_line_absolute_discount.field_account_invoice_discount_total
+msgid "Total Discount across all Invoice lines. The discount has already been deducted on each line."
+msgstr "Summierter Rabatt von allen Rechnungszeilen"
+
+#. module: order_line_absolute_discount
+#: model:ir.model.fields,help:order_line_absolute_discount.field_sale_order_discount_total
+msgid "Total Discount across all Sale Order lines"
+msgstr "Summierter Rabatt von allen Auftragszeilen"
