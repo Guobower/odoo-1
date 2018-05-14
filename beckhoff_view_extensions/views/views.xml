@@ -11,11 +11,10 @@
                 <filter name="year" position="before">
                     <filter name="today" string="Today" domain="[('date', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),
                       ('date', '&lt;=', datetime.datetime.now().strftime('%Y-%m-%d 23:23:59'))]"/>
-                    <!--TO DO-->
-                    <filter name="yesterday" string="Yesterday"
-                       domain="[('date', '&lt;=', (context_today()-datetime.timedelta(days=1)).strftime('%Y-%m-%d'))]"/>
+                    <filter name ="yesterday" string="Yesterday"
+                       domain="[('date','&gt;=', ((context_today()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00'))),
+                       ('date','&lt;=', ((context_today()+datetime.timedelta(days=0)).strftime('%Y-%m-%d 00:00:00')))]"/>
                      <filter string="Current Month" name="current_month" domain="[('date','&lt;',(context_today()+relativedelta(months=1)).strftime('%Y-%m-01')), ('date','&gt;=',time.strftime('%Y-%m-01'))]"/>
-                    <!--TO DO-->
                      <filter string="Last Month"
                             domain="[('date','&lt;=', (context_today()-relativedelta(day=31, months=1)).strftime('%Y-%m-%d')),
                             ('date','&gt;=',(context_today()-relativedelta(day=1,months=1)).strftime('%Y-%m-%d'))]"

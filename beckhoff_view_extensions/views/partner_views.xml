@@ -23,6 +23,7 @@
         </field>
     </record>
 
+<!--
     <record model="ir.ui.view" id="partner_website_publish_hide">
         <field name="name">res.partner.website.publish.hide</field>
         <field name="model">res.partner</field>
@@ -33,7 +34,7 @@
             </xpath>
         </field>
     </record>
-
+-->
 
     <record id="partner_search" model="ir.ui.view">
         <field name="name">Partner search</field>
