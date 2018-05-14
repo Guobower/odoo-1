@@ -8,7 +8,7 @@ class CustomerToPo(models.Model):
 
     customer = fields.Many2one('res.partner', 'Customer', track_visibility='OnChange')
     salesperson = fields.Many2one('res.users','Salesperson', track_visibility='OnChange')
-    salesteam_id = fields.Many2one('crm.team', string='Salesteam')
+    salesteam_id = fields.Many2one('crm.team', string='Salesteam', default=lambda self:self.env.user.sale_team_id.id)
     sale_order_id = fields.Many2one('sale.order', string="Sale Order",
                                     help="Not empty if an origin for purchase order was sale order")
 
