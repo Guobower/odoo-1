@@ -31,11 +31,22 @@ class RepairOrder(models.Model):
     helpdesk_ticket_id = fields.Many2one(comodel_name="helpdesk.ticket", string="Helpdesk Ticket")
 
     color = fields.Integer('Color Index', default=0)
-    stage_id = fields.Many2one(comodel_name='mrp.repair.stage', group_expand='_read_group_stage_ids', string='Stage', track_visibility='onchange')
+    stage_id = fields.Many2one(comodel_name='mrp.repair.stage', group_expand='_read_group_stage_ids',
+        string='Stage', track_visibility='onchange')
     repair_type = fields.Many2one(comodel_name='mrp.repair.type', string="Repair Type", track_visibility='onchange')
     currency_id = fields.Many2one(comodel_name="res.currency", string="Currency",
-                                    default=lambda self: self.env.user.company_id.currency_id)
+        default=lambda self: self.env.user.company_id.currency_id)
 
+    # Advance Payment fields
+    pos_order_ids = fields.One2many('pos.order.line', 'order_id')
+    pos_advance_pay_count = fields.Integer(string="# of Advance Payments", compute='_compute_advance_payments')
+
+    # Timesheet fields
+    task_id = fields.Many2one(related='helpdesk_ticket_id.task_id', string="Task")
+    project_id = fields.Many2one(related='helpdesk_ticket_id.project_id', string="Project")
+    is_closed = fields.Boolean(related='helpdesk_ticket_id.is_closed', string="Is Closed")
+    is_task_active = fields.Boolean(related='helpdesk_ticket_id.is_task_active', string="Task Active")
+    timesheet_ids = fields.One2many(related='helpdesk_ticket_id.task_id.timesheet_ids', string="Timesheets")
 
     @api.onchange('partner_id')
     def _onchange_partner_id(self):
@@ -68,6 +79,29 @@ class RepairOrder(models.Model):
                 result['views'] = [(res and res.id or False, 'form')]
                 result['res_id'] = invoices[0]
         return result
+
+    @api.multi
+    def action_view_pos_orders(self):
+        action = self.env.ref('point_of_sale.action_pos_order_line')
+        result = action.read()[0]
+        pos_ids = []
+        pos_order_ids = self.env['pos.order'].search([('partner_id', '=', self.partner_id.id)])
+        for order in pos_order_ids:
+            for line in order.lines:
+                if line.is_repair_advance == True:
+                    pos_ids.append(order.id)
+        pos_orders = list(set(pos_ids))
+        result['domain'] = [('id', 'in', pos_orders)]
+        return result
+
+    def _compute_advance_payments(self):
+        pos_order_ids = self.env['pos.order'].search([('partner_id', '=', self.partner_id.id)])
+        pos_ids = []
+        for order in pos_order_ids:
+            for line in order.lines:
+                if line.is_repair_advance == True:
+                    pos_ids.append(order.id)
+        self.pos_advance_pay_count = len(pos_ids)
 
     @api.onchange('repair_type')
     def _onchange_repair_type(self):
@@ -150,9 +184,21 @@ class RepairOrder(models.Model):
             """
         return res
 
-    # Overwrite build-in function to deactivcate insufficent stock popu on confirmation
+    # Overwrite build-in function to deactivcate insufficent stock popup on confirmation
     def action_validate(self):
         return self.action_repair_confirm()
+
+    @api.onchange('fees_lines')
+    def _compute_planned_time(self):
+        time = 0
+        if self.task_id:
+            for line in self.fees_lines:
+                #TODO Only Count time related products, change if clause to be more flexible
+                if line.product_uom.category_id.name == "Working Time":
+                    time += line.product_uom_qty
+            task = self.env['project.task'].search([('id', '=', self.task_id.id)])
+            task.write({'planned_hours': time})
+
 
     class RepairStage(models.Model):
         _name = 'mrp.repair.stage'

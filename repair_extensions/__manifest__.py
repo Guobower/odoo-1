@@ -37,6 +37,7 @@
         # 'security/ir.model.access.csv',
         'views/helpdesk_views.xml',
         'views/kanban_view.xml',
+        'views/product.xml',
         'views/rma_views.xml',
         'views/views.xml',
     ]
