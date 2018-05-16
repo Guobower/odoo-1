@@ -35,6 +35,7 @@
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
+        'report/repair_order_report.xml',
         'views/helpdesk_views.xml',
         'views/kanban_view.xml',
         'views/rma_views.xml',
