@@ -1,0 +1,28 @@
+<odoo>
+    <template id="report_repair_order" inherit_id="mrp_repair.report_mrprepairorder">
+        <xpath expr="//table[@class='table table-condensed']" position="before">
+            <div class="row mt32 mb32">
+                <div t-if="o.product_brand" class="col-xs-3">
+                    <strong>Brand:</strong>
+                    <p t-field="o.product_brand"/>
+                </div>
+                <div class="col-xs-3">
+                    <strong>Repair without notice until:</strong>
+                    <p t-field="o.amount_repair_until" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                </div>
+                <div t-if="o.technician" class="col-xs-3">
+                    <strong>Technician:</strong>
+                    <p t-field="o.technician"/>
+                </div>
+                <div t-if="o.repair_type" class="col-xs-3">
+                    <strong>Reparaturtyp:</strong>
+                    <p t-field="o.repair_type.name"/>
+                </div>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[@class='page']/p" position="before">
+            <h4>Error Description</h4>
+        </xpath>
+    </template>
+</odoo>

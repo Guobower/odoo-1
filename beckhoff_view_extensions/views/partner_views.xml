@@ -12,6 +12,17 @@
         </field>
     </record>
 
+    <record id="partner_form_vat_invisible" model="ir.ui.view">
+        <field name="name">res.partner.vat.company.only</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vat']" position="attributes">
+                <attribute name="attrs">{'invisible':[('company_type','=', 'person')]}</attribute>
+            </xpath>
+        </field>
+    </record>
+
     <record model="ir.ui.view" id="partner_active_toggle_hide">
         <field name="name">res.partner.active.toggle.hide</field>
         <field name="model">res.partner</field>
