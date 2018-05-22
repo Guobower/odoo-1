@@ -1,0 +1,46 @@
+<odoo>
+
+        <record id="mrp_repair_reconcile_wizard_form" model="ir.ui.view">
+            <field name="name">mrp.repair.advance.pay.reconcile.wizard.form</field>
+            <field name="model">mrp.repair.reconcile.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Reconcile Advance Payments">
+                <sheet>
+                    <div>
+                        <field name ="repair_order_id" readonly="1"/>
+                    </div>
+                    <div>
+                        <label for="partner_id"/>
+                        <field name="partner_id"/>
+                    </div>
+                    <p>
+                        Displays the unreconciled advance payment of the selected customer. Mark the checkbox an press Reconcile to use on this Repair order.
+                    </p>
+                    <notebook>
+                        <page string="Advance Payments">
+                            <field name="pos_order_line_ids">
+                                <tree string="Payment Lines" create="false" delete="false" editable="false">
+                                    <field name="line_to_reconcile" widget="checkbox"/>
+                                    <field name="date_order"/>
+                                    <field name="name"/>
+                                    <field name="product_id" readonly="1"/>
+                                    <field name="product_uom_qty"/>
+                                    <field name="price"/>
+                                    <field name="discount"/>
+                                    <field name="price_subtotal_incl"/>
+                                    <field name="taxes_id" invisible="1"/>
+                                    <field name="pos_order_line_id" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                    <footer>
+                        <button name="reconcile_payments" string="Reconcile Payments" type="object" class="btn-primary"/>
+                        <button special="cancel" string="Cancel" class="btn-default"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+</odoo>

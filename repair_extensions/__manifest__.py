@@ -41,5 +41,6 @@
         'views/product.xml',
         'views/rma_views.xml',
         'views/views.xml',
+        'wizard/advance_pay_reconcile_wizard_form.xml'
     ]
 }

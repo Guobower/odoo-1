@@ -108,7 +108,7 @@ class Helpdesk(models.Model):
 
 ### RMA
 
-    @api.multi
+    @api.one
     def _compute_rma_count(self):
         pass
         cond = [('helpdesk_ticket_id', '=', self.id)]

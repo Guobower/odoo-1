@@ -7,6 +7,7 @@ class RepairOrder(models.Model):
     _order = 'state'
 
     name = fields.Char(readonly=True)
+    partner_id = fields.Many2one(required=True)
     internal_notes = fields.Text('Internal Notes',
         placeholder="Add internal notes and accessories or damages...")
     quotation_notes = fields.Text('Error Description', required=True,
@@ -88,7 +89,7 @@ class RepairOrder(models.Model):
         pos_order_ids = self.env['pos.order'].search([('partner_id', '=', self.partner_id.id)])
         for order in pos_order_ids:
             for line in order.lines:
-                if line.is_repair_advance == True:
+                if line.is_repair_advance == True and not line.repair_order_id:
                     pos_ids.append(order.id)
         pos_orders = list(set(pos_ids))
         result['domain'] = [('id', 'in', pos_orders)]
@@ -99,7 +100,7 @@ class RepairOrder(models.Model):
         pos_ids = []
         for order in pos_order_ids:
             for line in order.lines:
-                if line.is_repair_advance == True:
+                if line.is_repair_advance == True and not line.repair_order_id:
                     pos_ids.append(order.id)
         self.pos_advance_pay_count = len(pos_ids)
 
@@ -188,8 +189,32 @@ class RepairOrder(models.Model):
     def action_validate(self):
         return self.action_repair_confirm()
 
-    @api.onchange('fees_lines')
-    def _compute_planned_time(self):
+
+    def reconcile_advance_payments(self):
+        view = self.env.ref('repair_extensions.mrp_repair_reconcile_wizard_form')
+        vals = {
+            'partner_id': self.partner_id.id,
+            'repair_order_id': self.id,
+        }
+        wizard = self.env['mrp.repair.reconcile.wizard'].create(vals)
+        wizard.get_reconcile_payments(self)
+        return {
+            'name': ('Create wizard'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'mrp.repair.reconcile.wizard',
+            'views': [(view.id, 'form')],
+            'view_id': view.id,
+            'target': 'new',
+            'res_id': wizard.id,
+            'context': vals,
+        }
+
+    @api.one
+    @api.depends('fees_lines.product_id', 'fees_lines.product_uom_qty', 'fees_lines.price_unit', 'operations.product_uom_qty')
+    def _planned_repair_time(self):
+        self.quotation_notes = "HelloWorld"
         time = 0
         if self.task_id:
             for line in self.fees_lines:
@@ -197,48 +222,49 @@ class RepairOrder(models.Model):
                 if line.product_uom.category_id.name == "Working Time":
                     time += line.product_uom_qty
             task = self.env['project.task'].search([('id', '=', self.task_id.id)])
+
             task.write({'planned_hours': time})
+            task.planned_hours = time
+
+class RepairStage(models.Model):
+    _name = 'mrp.repair.stage'
+    _description = 'Stage'
+    _order = 'sequence, id'
+
+    name = fields.Char(required=True, translate=True)
+    sequence = fields.Integer('Sequence', default=10)
+    is_close = fields.Boolean('Closing Kanban Stage', help='Tickets in this stage are considered done.')
+    fold = fields.Boolean('Folded', help="Folded in Kanban view")
+
+class RepairType(models.Model):
+    _name = 'mrp.repair.type'
+    _description = 'Repair Type'
+    _order = 'sequence, id'
+
+    active = fields.Boolean('Active', default=True)
+    name = fields.Char(required=True, translate=True)
+    sequence = fields.Integer('Sequence', default=10)
+    invoice_method = fields.Selection(string='Invoice Method', selection='repair_type_sel')
+    invoice_address = fields.Many2one('res.partner', string='Invoice Address')
+    tag_ids = fields.Many2many('mrp.repair.tag', string='Tags')
+    kanban_color = fields.Integer('Color Index')
+    technician = fields.Many2one('res.users', string='Technician', help="Sets a default Technician for every Repair Order of this type.")
+
+    @api.model
+    def repair_type_sel(self):
+        return [
+            ('none', 'No Invoice'),
+            ('b4repair', 'Before Repair'),
+            ('after_repair', 'After Repair'),
+            ]
 
 
-    class RepairStage(models.Model):
-        _name = 'mrp.repair.stage'
-        _description = 'Stage'
-        _order = 'sequence, id'
 
-        name = fields.Char(required=True, translate=True)
-        sequence = fields.Integer('Sequence', default=10)
-        is_close = fields.Boolean('Closing Kanban Stage', help='Tickets in this stage are considered done.')
-        fold = fields.Boolean('Folded', help="Folded in Kanban view")
+class Tag(models.Model):
+    _name = 'mrp.repair.tag'
+    _description = 'Category of Repair Order'
 
-    class RepairType(models.Model):
-        _name = 'mrp.repair.type'
-        _description = 'Repair Type'
-        _order = 'sequence, id'
+    name = fields.Char('Name', required=True)
+    color = fields.Integer('Color Index')
 
-        active = fields.Boolean('Active', default=True)
-        name = fields.Char(required=True, translate=True)
-        sequence = fields.Integer('Sequence', default=10)
-        invoice_method = fields.Selection(string='Invoice Method', selection='repair_type_sel')
-        invoice_address = fields.Many2one('res.partner', string='Invoice Address')
-        tag_ids = fields.Many2many('mrp.repair.tag', string='Tags')
-        kanban_color = fields.Integer('Color Index')
-        technician = fields.Many2one('res.users', string='Technician', help="Sets a default Technician for every Repair Order of this type.")
-
-        @api.model
-        def repair_type_sel(self):
-            return [
-                ('none', 'No Invoice'),
-                ('b4repair', 'Before Repair'),
-                ('after_repair', 'After Repair'),
-                ]
-
-
-
-    class Tag(models.Model):
-        _name = 'mrp.repair.tag'
-        _description = 'Category of Repair Order'
-
-        name = fields.Char('Name', required=True)
-        color = fields.Integer('Color Index')
-
-        _sql_constraints = [('name_uniq', 'unique (name)', "Tag name already exists !"),]
+    _sql_constraints = [('name_uniq', 'unique (name)', "Tag name already exists !"),]
