@@ -24,6 +24,17 @@
         </field>
     </record>
 
+    <record id="product_product_categ_no_edit" model="ir.ui.view">
+        <field name="name">product.product.categ.no.create.edit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='categ_id']" position="attributes">
+                <attribute name="options">{'no_create_edit':True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
     <record id="product_hide_cost" model="ir.ui.view">
         <field name="name">product.template.cost.hide</field>
         <field name="model">product.template</field>
