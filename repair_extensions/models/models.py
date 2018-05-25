@@ -43,11 +43,15 @@ class RepairOrder(models.Model):
     pos_advance_pay_count = fields.Integer(string="# of Advance Payments", compute='_compute_advance_payments')
 
     # Timesheet fields
-    task_id = fields.Many2one(related='helpdesk_ticket_id.task_id', string="Task")
+    task_id = fields.Many2one('project.task', string="Task", compute="_get_helpdesk_task", store=True)
     project_id = fields.Many2one(related='helpdesk_ticket_id.project_id', string="Project")
     is_closed = fields.Boolean(related='helpdesk_ticket_id.is_closed', string="Is Closed")
     is_task_active = fields.Boolean(related='helpdesk_ticket_id.is_task_active', string="Task Active")
     timesheet_ids = fields.One2many(related='helpdesk_ticket_id.task_id.timesheet_ids', string="Timesheets")
+
+    @api.depends('helpdesk_ticket_id.task_id')
+    def _get_helpdesk_task(self):
+        self.task_id = self.helpdesk_ticket_id.task_id.id
 
     @api.onchange('partner_id')
     def _onchange_partner_id(self):
