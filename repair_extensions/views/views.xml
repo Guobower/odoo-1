@@ -1,89 +1,105 @@
 <odoo>
 
-    <record id="repair_order_form_product_history" model="ir.ui.view">
-        <field name="name">repair.order.product.history.form</field>
-        <field name="model">mrp.repair</field>
-        <field name="inherit_id" ref="mrp_repair.view_repair_order_form"/>
-        <field name="arch" type="xml">
-            <button name="action_created_invoice" position="before">
-                <button type="object"  name="action_view_pos_orders"
-                        class="oe_stat_button"
-                        icon="fa-shopping-bag"
-                        context="{'search_default_partner_id': partner_id}"
-                        attrs="{'invisible': [('partner_id','=', False)]}">
-                        <field string="Repair Advances" name="pos_advance_pay_count" widget="statinfo"/>
-                </button>
-                <button type="object"  name="action_view_invoice"
-                        class="oe_stat_button"
-                        icon="fa-pencil-square-o"
-                        string="Origin Inv"
-                        context="{'search_default_partner_id': partner_id}"
-                        attrs="{'invisible': [('reference_move_id','=', False)]}">
-                </button>
-            </button>
-            <xpath expr="//field[@name='partner_id']" position="replace">
-            </xpath>
-            <field name ="product_id" position="before">
-                <field name="partner_id"/>
-                <field name="product_brand" nolabel="1"/>
-                <field name="product_category" nolabel="1"/>
-            </field>
-            <field name="partner_id" position="after">
-                <field name="reference_move_id"
-                   options="{'no_create': True}"
-                   domain="['&amp;', '|', ('state', '=', 'done'), ('state', '=', 'done'), '|',
-                            ('picking_id.partner_id', '=', partner_id),
-                            ('picking_id.partner_id', 'child_of', partner_id)]"
-                   attrs="{'invisible': [('partner_id', '=', False)]}"/>
-                <field name="invoice_line_id"
-                    options="{'no_create': True}"
-                    domain="['|',
-                      ('invoice_id.partner_id', '=', partner_id),
-                      ('invoice_id.partner_id', 'child_of', partner_id)]"
-                    attrs="{'invisible': ['|',
-                      ('partner_id', '=', False),
-                      ('state', '!=', 'draft')]}"/>
-            </field>
-            <field name="lot_id" position="after">
-                <field name="currency_id" invisible="1"/>
-                <field name="amount_repair_until" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
-            </field>
-            <field name="pricelist_id" position="after">
-                <field name="technician"/>
-                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
-                <field name="helpdesk_ticket_id"/>
-                <field name="task_id" invisible="0"/>
-                <field name="project_id" invisible="1"/>
-                <field name="is_closed" invisible="1"/>
-                <field name="is_task_active" invisible="1"/>
-                <field name="repair_type"/>
-           </field>
-           <field name="internal_notes" position="before">
+  <record id="view_repair_order_form_new_group" model="ir.ui.view">
+      <field name="name">mrp.repair.order.new.form</field>
+      <field name="model">mrp.repair</field>
+      <field name="inherit_id" ref="mrp_repair.view_repair_order_form"/>
+      <field name="arch" type="xml">
+          <xpath expr="//form/sheet/group" position="replace">
+              <group>
+                  <group>
+                      <field name="tracking" invisible="1" attrs="{'readonly': 1}"/>
+                      <field name="partner_id"/>
+                      <field name="reference_move_id"
+                         options="{'no_create': True}"
+                         domain="['&amp;', '|', ('state', '=', 'done'), ('state', '=', 'done'), '|',
+                                  ('picking_id.partner_id', '=', partner_id),
+                                  ('picking_id.partner_id', 'child_of', partner_id)]"
+                         attrs="{'invisible': [('partner_id', '=', False)]}"/>
+                      <field name="invoice_line_id"
+                          options="{'no_create': True}"
+                          domain="['|',
+                            ('invoice_id.partner_id', '=', partner_id),
+                            ('invoice_id.partner_id', 'child_of', partner_id)]"
+                          attrs="{'invisible': ['|',
+                            ('partner_id', '=', False),
+                            ('state', '!=', 'draft')]}"/>
+                      <field name="helpdesk_ticket_id"/>
+                      <field name="repair_type"/>
+                      <field name="invoice_method"/>
+                      <field name="is_closed" invisible="1"/>
+                      <field name="is_task_active" invisible="1"/>
+                      <field name="project_id" invisible="1"/>
+                      <field name="currency_id" invisible="1"/>
+                  </group>
+                  <group>
+                      <field name="product_brand" nolabel="1"/>
+                      <field name="product_category" nolabel="1"/>
+                      <field name="product_id"/>
+                      <label for="product_qty"/>
+                      <div class="o_row">
+                          <field name="product_qty"/>
+                          <field name="product_uom" groups="product.group_uom"/>
+                      </div>
+                      <field name="lot_id" domain="[('product_id', '=', product_id)]" context="{'default_product_id': product_id}" groups="stock.group_production_lot" attrs="{'required':[('tracking', '!=', 'none')], 'readonly':[('state', '=', 'done')]}"/>
+                      <field name="amount_repair_until" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>/>
+                      <field name="guarantee_limit"/>
+                      <field name="technician"/>
+                      <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                  </group>
+              </group>
+          </xpath>
+      </field>
+  </record>
+<!--
+  <record id="view_repair_order_form_text_headings" model="ir.ui.view">
+      <field name="name">mrp.repair.order.text.headings</field>
+      <field name="model">mrp.repair</field>
+      <field name="inherit_id" ref="mrp_repair.view_repair_order_form"/>
+      <field name="arch" type="xml">
+           <xpath expr="//field[@name='internal_notes']" position="before">
                 <h3>Internal Notes</h3>
-           </field>
-           <field name="quotation_notes" position="before">
+           </xpath>
+           <xpath expr="//field[@name='quotation_notes']" position="before">
                 <h3>Error Description</h3>
-           </field>
-           <!-- Invisible Stock Lockations -->
+           </xpath>
+       </field>
+   </record>
+
+    Invisible Stock Locations -->
+   <record id="view_repair_order_form_stock_locations" model="ir.ui.view">
+       <field name="name">mrp.repair.order.stock.locations</field>
+       <field name="model">mrp.repair</field>
+       <field name="inherit_id" ref="mrp_repair.view_repair_order_form"/>
+       <field name="arch" type="xml">
            <xpath expr="//field[@name='location_id']" position="attributes">
                 <attribute name="invisible">1</attribute>
            </xpath>
            <xpath expr="//field[@name='location_dest_id']" position="attributes">
                 <attribute name="invisible">1</attribute>
            </xpath>
+        </field>
+    </record>
+
+    <record id="view_repair_order_form_timesheets" model="ir.ui.view">
+        <field name="name">mrp.repair.order.timesheets</field>
+        <field name="model">mrp.repair</field>
+        <field name="inherit_id" ref="mrp_repair.view_repair_order_form"/>
+        <field name="arch" type="xml">
            <xpath expr="//notebook" position="inside">
-             <page string="Timesheets" attrs="{'invisible': [('project_id', '=', False), ('timesheet_ids', '=', [])]}" groups="hr_timesheet.group_hr_timesheet_user">
-                       <field name='timesheet_ids' attrs="{'readonly': [('task_id', '=', True), '|', ('is_closed', '=', True), ('is_task_active', '=', False)]}" context="{'default_project_id': project_id, 'default_task_id': task_id}" groups="hr_timesheet.group_hr_timesheet_user">
-                           <tree editable="bottom" string="Timesheet Activities" default_order="date">
-                               <field name="date"/>
-                               <field name="user_id" invisible="1"/>
-                               <field name="employee_id" required="1"/>
-                               <field name="name"/>
-                               <field name="unit_amount" string="Duration" sum="Total hours" widget="float_time"/>
-                               <field name="project_id" invisible="1"/>
-                               <field name="task_id" invisible="1"/>
-                           </tree>
-                       </field>
+             <field name="task_id" invisible="1"/>
+             <page string="Timesheets" attrs="{'invisible': [('task_id', '=', False), ('timesheet_ids', '=', [])]}" groups="hr_timesheet.group_hr_timesheet_user">
+                   <field name='timesheet_ids' attrs="{'readonly': [('task_id', '=', True), '|', ('is_closed', '=', True), ('is_task_active', '=', False)]}" context="{'default_project_id': project_id, 'default_task_id': task_id}" groups="hr_timesheet.group_hr_timesheet_user">
+                       <tree editable="bottom" string="Timesheet Activities" default_order="date">
+                           <field name="date"/>
+                           <field name="user_id" invisible="1"/>
+                           <field name="employee_id" required="1"/>
+                           <field name="name"/>
+                           <field name="unit_amount" string="Duration" sum="Total hours" widget="float_time"/>
+                           <field name="project_id" invisible="1"/>
+                           <field name="task_id" invisible="1"/>
+                       </tree>
+                   </field>
              </page>
            </xpath>
         </field>
