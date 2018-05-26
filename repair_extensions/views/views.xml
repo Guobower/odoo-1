@@ -31,6 +31,8 @@
                       <field name="is_task_active" invisible="1"/>
                       <field name="project_id" invisible="1"/>
                       <field name="currency_id" invisible="1"/>
+                      <field name="location_dest_id" invisible="1"/>
+                      <field name="location_id" invisible="1"/>
                   </group>
                   <group>
                       <field name="product_brand" nolabel="1"/>
@@ -42,7 +44,7 @@
                           <field name="product_uom" groups="product.group_uom"/>
                       </div>
                       <field name="lot_id" domain="[('product_id', '=', product_id)]" context="{'default_product_id': product_id}" groups="stock.group_production_lot" attrs="{'required':[('tracking', '!=', 'none')], 'readonly':[('state', '=', 'done')]}"/>
-                      <field name="amount_repair_until" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>/>
+                      <field name="amount_repair_until" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
                       <field name="guarantee_limit"/>
                       <field name="technician"/>
                       <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
@@ -51,7 +53,7 @@
           </xpath>
       </field>
   </record>
-<!--
+
   <record id="view_repair_order_form_text_headings" model="ir.ui.view">
       <field name="name">mrp.repair.order.text.headings</field>
       <field name="model">mrp.repair</field>
@@ -66,41 +68,26 @@
        </field>
    </record>
 
-    Invisible Stock Locations -->
-   <record id="view_repair_order_form_stock_locations" model="ir.ui.view">
-       <field name="name">mrp.repair.order.stock.locations</field>
-       <field name="model">mrp.repair</field>
-       <field name="inherit_id" ref="mrp_repair.view_repair_order_form"/>
-       <field name="arch" type="xml">
-           <xpath expr="//field[@name='location_id']" position="attributes">
-                <attribute name="invisible">1</attribute>
-           </xpath>
-           <xpath expr="//field[@name='location_dest_id']" position="attributes">
-                <attribute name="invisible">1</attribute>
-           </xpath>
-        </field>
-    </record>
-
     <record id="view_repair_order_form_timesheets" model="ir.ui.view">
         <field name="name">mrp.repair.order.timesheets</field>
         <field name="model">mrp.repair</field>
         <field name="inherit_id" ref="mrp_repair.view_repair_order_form"/>
         <field name="arch" type="xml">
            <xpath expr="//notebook" position="inside">
-             <field name="task_id" invisible="1"/>
-             <page string="Timesheets" attrs="{'invisible': [('task_id', '=', False), ('timesheet_ids', '=', [])]}" groups="hr_timesheet.group_hr_timesheet_user">
-                   <field name='timesheet_ids' attrs="{'readonly': [('task_id', '=', True), '|', ('is_closed', '=', True), ('is_task_active', '=', False)]}" context="{'default_project_id': project_id, 'default_task_id': task_id}" groups="hr_timesheet.group_hr_timesheet_user">
-                       <tree editable="bottom" string="Timesheet Activities" default_order="date">
-                           <field name="date"/>
-                           <field name="user_id" invisible="1"/>
-                           <field name="employee_id" required="1"/>
-                           <field name="name"/>
-                           <field name="unit_amount" string="Duration" sum="Total hours" widget="float_time"/>
-                           <field name="project_id" invisible="1"/>
-                           <field name="task_id" invisible="1"/>
-                       </tree>
-                   </field>
-             </page>
+               <field name="task_id" invisible="1"/>
+               <page string="Timesheets" attrs="{'invisible': [('task_id', '=', False), ('timesheet_ids', '=', [])]}" groups="hr_timesheet.group_hr_timesheet_user">
+                     <field name='timesheet_ids' attrs="{'readonly': [('task_id', '=', True), '|', ('is_closed', '=', True), ('is_task_active', '=', False)]}" context="{'default_project_id': project_id, 'default_task_id': task_id}" groups="hr_timesheet.group_hr_timesheet_user">
+                         <tree editable="bottom" string="Timesheet Activities" default_order="date">
+                             <field name="date"/>
+                             <field name="user_id" invisible="1"/>
+                             <field name="employee_id" required="1"/>
+                             <field name="name"/>
+                             <field name="unit_amount" string="Duration" sum="Total hours" widget="float_time"/>
+                             <field name="project_id" invisible="1"/>
+                             <field name="task_id" invisible="1"/>
+                         </tree>
+                     </field>
+               </page>
            </xpath>
         </field>
     </record>
