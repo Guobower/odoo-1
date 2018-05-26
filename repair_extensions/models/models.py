@@ -49,6 +49,7 @@ class RepairOrder(models.Model):
     is_task_active = fields.Boolean(related='helpdesk_ticket_id.is_task_active', string="Task Active")
     timesheet_ids = fields.One2many(related='helpdesk_ticket_id.task_id.timesheet_ids', string="Timesheets")
 
+    @api.one
     @api.depends('helpdesk_ticket_id.task_id')
     def _get_helpdesk_task(self):
         self.task_id = self.helpdesk_ticket_id.task_id.id
