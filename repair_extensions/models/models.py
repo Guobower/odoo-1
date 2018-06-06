@@ -6,6 +6,12 @@ class RepairOrder(models.Model):
     _inherit = 'mrp.repair'
     _order = 'state'
 
+    def _get_default_repair_type(self):
+        records = self.env['mrp.repair.type'].search([])
+        if records:
+            records_sorted = records.sorted(key=lambda r: r.sequence)
+            return records_sorted[0].id
+
     name = fields.Char(readonly=True)
     partner_id = fields.Many2one(required=True)
     internal_notes = fields.Text('Internal Notes',
@@ -34,7 +40,7 @@ class RepairOrder(models.Model):
     color = fields.Integer('Color Index', default=0)
     stage_id = fields.Many2one(comodel_name='mrp.repair.stage', group_expand='_read_group_stage_ids',
         string='Stage', track_visibility='onchange')
-    repair_type = fields.Many2one(comodel_name='mrp.repair.type', string="Repair Type", track_visibility='onchange')
+    repair_type = fields.Many2one(comodel_name='mrp.repair.type', string="Repair Type", track_visibility='onchange', default=_get_default_repair_type)
     currency_id = fields.Many2one(comodel_name="res.currency", string="Currency",
         default=lambda self: self.env.user.company_id.currency_id)
 
@@ -217,7 +223,7 @@ class RepairOrder(models.Model):
             'res_id': wizard.id,
             'context': vals,
         }
-
+    """
     @api.one
     @api.depends('fees_lines.product_id', 'fees_lines.product_uom_qty', 'fees_lines.price_unit', 'operations.product_uom_qty')
     def _planned_repair_time(self):
@@ -232,6 +238,7 @@ class RepairOrder(models.Model):
 
             task.write({'planned_hours': time})
             task.planned_hours = time
+    """
 
 class RepairLine(models.Model):
     _inherit = 'mrp.repair.line'
