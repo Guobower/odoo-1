@@ -48,6 +48,8 @@ class RepairOrder(models.Model):
     is_closed = fields.Boolean(related='helpdesk_ticket_id.is_closed', string="Is Closed")
     is_task_active = fields.Boolean(related='helpdesk_ticket_id.is_task_active', string="Task Active")
     timesheet_ids = fields.One2many(related='helpdesk_ticket_id.task_id.timesheet_ids', string="Timesheets")
+    planned_hours = fields.Float(related='helpdesk_ticket_id.task_id.planned_hours', string="Planned Hours")
+    timesheet_progress = fields.Float(related='helpdesk_ticket_id.task_id.progress', string="Progress")
 
     @api.one
     @api.depends('helpdesk_ticket_id.task_id')
@@ -230,6 +232,11 @@ class RepairOrder(models.Model):
 
             task.write({'planned_hours': time})
             task.planned_hours = time
+
+class RepairLine(models.Model):
+    _inherit = 'mrp.repair.line'
+
+    type = fields.Selection(default='add')
 
 class RepairStage(models.Model):
     _name = 'mrp.repair.stage'
