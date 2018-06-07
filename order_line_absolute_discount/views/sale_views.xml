@@ -6,7 +6,7 @@
       <field name="inherit_id" ref="sale.view_order_form" />
       <field name="arch" type="xml">
           <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="after">
-              <field name="discount_absolute" class="oe_inline" />
+              <field name="discount_absolute"/>
           </xpath>
           <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="attributes">
               <attribute name="attrs">{'readonly': [('discount_absolute', '!=', 0)]}</attribute>
