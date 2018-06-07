@@ -1,0 +1,91 @@
+<odoo>
+
+        <record id="action_po_from_repair" model="ir.actions.act_window">
+            <field name="name">Generate Purchase order from the Repair Order</field>
+            <field name="res_model">purchase.order.repair.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="purchase_order_tree_wo_create_repair" model="ir.ui.view">
+            <field name="name">purchase.order.wo.create.tree</field>
+            <field name="model">purchase.order</field>
+            <field name="arch" type="xml">
+                <tree string="Purchase Order" create="false"
+                      decoration-bf="message_unread==True" decoration-muted="state=='cancel'" decoration-info="state in ('wait','confirmed')">
+                    <field name="message_unread" invisible="1"/>
+                    <field name="name" string="Reference"/>
+                    <field name="date_order" />
+                    <field name="partner_id"/>
+                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                    <field name="date_planned" invisible="context.get('quotation_only', False)"/>
+                    <field name="origin"/>
+                    <field name="amount_untaxed" sum="Total Untaxed amount" string="Untaxed" widget="monetary"/>
+                    <field name="amount_total" sum="Total amount" widget="monetary"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="state"/>
+                    <field name="customer"/>
+                    <field name="salesperson"/>
+                    <field name="invoice_status" invisible="not context.get('show_purchase', True)"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_purchased_orders_repair" model="ir.actions.act_window">
+            <field name="name">Purchase Orders</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="beckhoff_po_customer_repair.purchase_order_tree_wo_create_repair"/>
+            <field name="domain">[('repair_order_id', '=', active_id)]</field>
+        </record>
+
+        <record id="view_repair_order_purchase_form" model="ir.ui.view">
+            <field name="name">mrp.repair.order.form.purchase</field>
+            <field name="model">mrp.repair</field>
+            <field name="inherit_id" ref="mrp_repair.view_repair_order_form"/>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='action_validate']" position="after">
+                    <button name="create_purchase_order_repair" type="object" string="Purchase Parts"/>
+                </xpath>
+                <xpath expr="//button[@name='action_created_invoice']" position="after">
+                    <button class="oe_stat_button" type="action"
+                            name="%(beckhoff_po_customer_repair.action_purchased_orders_repair)d"
+                            attrs="{'invisible': [('purchased_orders', 'in', [False, None, 0])]}"
+                            icon="fa-shopping-cart">
+                        <div class="o_form_field o_stat_info">
+                            <field name="purchased_orders"/>
+                            <span class="o_stat_text">Purchase Orders</span>
+                        </div>
+                    </button>
+                </xpath>
+                <xpath expr="//tree/field[@name='product_uom_qty']" position="after">
+                    <field name="forecasted_qty" invisible="1"/>
+                </xpath>
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="decoration-danger">forecasted_qty&lt;0</attribute>
+                </xpath>
+            </field>
+        </record>
+        <act_window id="act_window_po_from_repair"
+            name="Generate Purchase order"
+            src_model="mrp.repair"
+            res_model="purchase.order.repair.wizard"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"/>
+
+        <record id="purchase_order_form_inherited_repair" model="ir.ui.view">
+            <field name="name">purchase.order.form</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='company_id']" position="after">
+                    <field name="repair_order_id" attrs="{'invisible': [('repair_order_id', 'in', [False, None])]}"/>
+                </xpath>
+            </field>
+        </record>
+
+</odoo>
