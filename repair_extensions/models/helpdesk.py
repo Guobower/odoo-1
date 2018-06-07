@@ -6,12 +6,14 @@ class Helpdesk(models.Model):
 
     status_update = fields.Boolean(string="Status Update", default=True,
                                     help="If the Box is deactivated, the customer is removed from the Followers list.")
+    is_repair = fields.Boolean('Is a Repair Order?', default=False, compute="_create_task_for_repair_order", store=True)
 
     repair_count = fields.Integer('Number of repairs for this ticket', compute="_compute_repair_count", store=True)
     repair_orders = fields.One2many(comodel_name="mrp.repair", inverse_name="helpdesk_ticket_id")
     repair_status = fields.Char(compute="_compute_repair_status", string='Repair Status',
                                 help="This field will display the status of the lowest state found in attached repair orders.")
-    is_repair = fields.Boolean('Is a Repair Order?', default=False, compute="_create_task_for_repair_order", store=True)
+    repair_stage = fields.Char(compute="_compute_repair_stage", string='Repair Stage',
+                                help="This field will display the status of the lowest stage found in attached repair orders.")
 
     rma_count = fields.Integer('Number of RMAs for this ticket', compute="_compute_rma_count")
     rma_orders = fields.One2many(comodel_name="rma.order.line", inverse_name="helpdesk_ticket_id")
@@ -92,6 +94,14 @@ class Helpdesk(models.Model):
                     ticket.repair_status = 'Status Error'
             else:
                 ticket.repair_status = 'None'
+
+    @api.depends('repair_orders.stage_id')
+    def _compute_repair_stage(self):
+        records = self.env['mrp.repair'].search([('helpdesk_ticket_id', '=', self.id)])
+        if records:
+            records_sorted = records.sorted(key=lambda r: r.stage_id.sequence)
+            stage = records_sorted[0].stage_id.name
+            self.repair_stage = stage
 
     @api.one
     @api.depends('repair_orders')
