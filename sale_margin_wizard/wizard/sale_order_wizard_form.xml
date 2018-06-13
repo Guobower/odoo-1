@@ -1,0 +1,60 @@
+<odoo>
+
+        <record id="sale_order_margin_wizard_form" model="ir.ui.view">
+            <field name="name">sale.order.margin.wizard.form</field>
+            <field name="model">sale.order.margin.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Sale Order Margins">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="sale_order_id" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id" domain="[('customer','=',True)]"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="sale_order_id" invisible="1"/>
+                            <field name="amount_total" readonly="1" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                            <field name="margin_total" readonly="1" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                            <field name="margin_percent_total" widget="progressbar" readonly="1"/>
+                        </group>
+                    </group>
+                    <p>
+                        Red color indicates the lines from which orders will be created
+                    </p>
+                    <notebook>
+                        <page string="Products">
+                            <field name="order_line_ids">
+                                <tree string="Sale Order Lines" editable="bottom" delete="false" create="false">
+                                    <field name="section" readonly="1"/>
+                                    <field name="product_id" readonly="1"/>
+                                    <field name="product_uom_qty" invisible="1"/>
+
+                                    <field name="price_unit" />
+                                    <field name="cost_unit"/>
+                                    <field name="discount" attrs="{'readonly': [('discount_absolute', '!=', 0)]}"/>
+                                    <field name="discount_absolute" attrs="{'readonly': [('discount', '!=', 0)]}"/>
+                                    <field name="amount_tax" invisible="1"/>
+                                    <field name="taxes_id" invisible="1"/>
+                                    <field name="price_discounted" readonly="1"/>
+                                    <field name="margin" readonly="1"/>
+                                    <field name="margin_percent" widget="progressbar"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                    <footer>
+                        <button name="manipulate_prices" string="Change Prices" type="object" class="btn-primary"/>
+                        <button special="cancel" string="Cancel" class="btn-default"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+</odoo>
