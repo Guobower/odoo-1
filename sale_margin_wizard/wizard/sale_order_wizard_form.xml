@@ -13,8 +13,11 @@
                     </div>
                     <group>
                         <group>
-                            <field name="partner_id" domain="[('customer','=',True)]"/>
+                            <field name="partner_id" domain="[('customer','=',True)]" invisible="1"/>
                             <field name="currency_id" invisible="1"/>
+                            <field name="price_target" attrs="{'readonly': [('margin_target', '!=', 0)]}"/>
+                            <field name="margin_target" attrs="{'readonly': [('price_target', '!=', 0)]}"/>
+                            <field name="discount_mode"/>
                         </group>
                         <group>
                             <field name="company_id" invisible="1"/>
@@ -51,6 +54,8 @@
                 </sheet>
                     <footer>
                         <button name="manipulate_prices" string="Change Prices" type="object" class="btn-primary"/>
+                        <button name="reset_so_lines" string="Reset" type="object"/>
+                        <button name="restore_so_lines_prices" string="Restore" type="object"/>
                         <button special="cancel" string="Cancel" class="btn-default"/>
                     </footer>
                 </form>
