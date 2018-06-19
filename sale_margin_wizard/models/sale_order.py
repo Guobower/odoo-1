@@ -19,7 +19,7 @@ class SaleOrder(models.Model):
         wizard = self.env['sale.order.margin.wizard'].create(vals)
         wizard.create_so_lines(self)
         return {
-            'name': ('Create wizard'),
+            'name': ('Sale Margin Wizard'),
             'type': 'ir.actions.act_window',
             'view_type': 'form',
             'view_mode': 'form',

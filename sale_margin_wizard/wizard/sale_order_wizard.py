@@ -33,6 +33,14 @@ class SaleOrderMarginWizard(models.TransientModel):
     margin_total = fields.Float(string='Margin Total', compute="compute_total", digits=dp.get_precision('Product Price'))
     margin_percent_total = fields.Float(string='Margin Total (%)', compute="compute_total", digits=dp.get_precision('Discount'))
 
+    # View Option fields
+    show_sections = fields.Boolean(string="Show Sections", default=False)
+    show_quantity = fields.Boolean(string="Show Unit Quantities", default=False)
+    show_unit_cost = fields.Boolean(string="Show Unit Cost", default=True)
+    show_absolute_margin = fields.Boolean(string="Show Absolute Margin", default=True)
+    show_amount_tax = fields.Boolean(string="Show Amount Tax", default=False)
+
+
 
     def create_so_lines(self, s_order):
         for line in s_order.order_line:
@@ -93,8 +101,8 @@ class SaleOrderMarginWizard(models.TransientModel):
     def compute_target_margin(self):
         if self.margin_target < 0 or self.margin_target > 100:
             raise ValidationError("Margin must be between 0 and 100")
-        self.reset_so_lines()
         if self.margin_target > 0:
+            self.reset_so_lines()
             for line in self.order_line_ids:
                 line.discount = 0
                 line.discount_absolute = 0
@@ -122,21 +130,22 @@ class SaleOrderMarginWizard(models.TransientModel):
                 if self.discount_mode == 'price':
                     line.price_unit = line.price_unit - line.price_unit * price_target_rel
 
-    # TODO Fix me
+
     @api.onchange('discount_mode')
     def compute_discount_mode(self):
         # re-compute the discount into another discount model
         if self.margin_target == 0 and self.price_target == 0:
-            if self.discount_mode == 'relative':
-                for line in self.order_line_ids:
-                    if line.discount_absolute > 0:
-                        line.discount = line.discount_absolute / line.price_unit * 100
-                        line.discount_absolute = 0
-            if self.discount_mode == 'absolute':
-                for line in self.order_line_ids:
-                    if line.discount > 0:
-                        line.discount_absolute = line.discount * line.price_unit
-                        line.discount = 0
+            for line in self.order_line_ids:
+                if self.discount_mode == 'relative' and line.discount == 0:
+                    line.discount = line.discount_absolute / line.price_unit * 100
+                    line.discount_absolute = 0
+                if self.discount_mode == 'absolute' and line.discount_absolute == 0:
+                    line.discount_absolute = line.discount * line.price_unit / 100
+                    line.discount = 0
+                if self.discount_mode == 'price':
+                    line.price_unit = line.price_discounted
+                    line.discount = 0
+                    line.discount_absolute = 0
 
 
     @api.onchange('discount_mode')
