@@ -27,11 +27,14 @@ class SaleOrderMarginWizard(models.TransientModel):
     pricelist_id = fields.Many2one('product.pricelist', string='Pricelist')
     margin_target = fields.Float(string='Target Margin', help="Computes the price for each line to have the entered margin.")
     price_target = fields.Float(string='Target Price', help='Discounts all lines in relation to their price.')
+    discount_target = fields.Float(string='Target Discount', help='Set a target discounts which will be applied to the lines according to discount mode')
     discount_mode = fields.Selection(string='Discount Mode', selection='discount_mode_selection')
 
     amount_total = fields.Float(string='Amount Total', compute="compute_total", digits=dp.get_precision('Product Price'))
     margin_total = fields.Float(string='Margin Total', compute="compute_total", digits=dp.get_precision('Product Price'))
     margin_percent_total = fields.Float(string='Margin Total (%)', compute="compute_total", digits=dp.get_precision('Discount'))
+    discount_total = fields.Float(string='Discount Total', compute='compute_total', digits=dp.get_precision('Product Price'))
+    discount_percent_total = fields.Float(string='Discount Total (%)', compute='compute_total', digits=dp.get_precision('Discount'))
 
     # View Option fields
     show_sections = fields.Boolean(string="Show Sections", default=False)
@@ -39,6 +42,7 @@ class SaleOrderMarginWizard(models.TransientModel):
     show_unit_cost = fields.Boolean(string="Show Unit Cost", default=True)
     show_absolute_margin = fields.Boolean(string="Show Absolute Margin", default=True)
     show_amount_tax = fields.Boolean(string="Show Amount Tax", default=False)
+    show_total_discounts = fields.Boolean(string="Show Total Discounts", default=False)
 
 
 
@@ -85,7 +89,9 @@ class SaleOrderMarginWizard(models.TransientModel):
         for line in self.order_line_ids:
             self.amount_total += line.price_discounted * line.product_uom_qty
             self.margin_total += line.margin * line.product_uom_qty
+            self.discount_total += (line.product_id.lst_price - line.price_discounted) * line.product_uom_qty
         self.margin_percent_total = self.margin_total / self.amount_total * 100
+        self.discount_percent_total = self.discount_total / self.amount_total * 100
 
 
     def manipulate_prices(self):
@@ -129,6 +135,21 @@ class SaleOrderMarginWizard(models.TransientModel):
                     line.discount_absolute = line.price_unit * price_target_rel
                 if self.discount_mode == 'price':
                     line.price_unit = line.price_unit - line.price_unit * price_target_rel
+
+
+    @api.onchange('discount_mode')
+    def compute_target_discount(self):
+        if self.discount_target > 0:
+            if self.discount_mode == 'relative':
+                if self.discount_target < 0 or self.discount_target > 100:
+                    raise ValidationError("If you want to set a relative discount, the discount amount must be between 0 and 100.")
+                for line in self.order_line_ids:
+                    line.discount = self.discount_target
+            if self.discount_mode == 'absolute':
+                for line in self.order_line_ids:
+                    line.discount_absolute = self.discount_target
+            if self.discount_mode == 'price':
+                raise ValidationError("This Discount/Discount Mode configuration is not supported. Please use an absolute or relative discount.")
 
 
     @api.onchange('discount_mode')

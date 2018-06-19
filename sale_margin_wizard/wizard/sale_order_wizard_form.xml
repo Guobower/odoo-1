@@ -15,8 +15,9 @@
                         <group>
                             <field name="partner_id" domain="[('customer','=',True)]" invisible="1"/>
                             <field name="currency_id" invisible="1"/>
-                            <field name="price_target" attrs="{'readonly': [('margin_target', '!=', 0)]}"/>
-                            <field name="margin_target" attrs="{'readonly': [('price_target', '!=', 0)]}"/>
+                            <field name="price_target" attrs="{'readonly': ['|', ('margin_target', '!=', 0), ('discount_target', '!=', 0)]}"/>
+                            <field name="margin_target" attrs="{'readonly': ['|', ('price_target', '!=', 0), ('discount_target', '!=', 0)]}"/>
+                            <field name="discount_target" attrs="{'readonly': ['|', ('price_target', '!=', 0), ('margin_target', '!=', 0)]}"/>
                             <field name="discount_mode"/>
                         </group>
                         <group>
@@ -27,9 +28,6 @@
                             <field name="margin_percent_total" widget="progressbar" readonly="1"/>
                         </group>
                     </group>
-                    <p>
-                        Red color indicates the lines from which orders will be created
-                    </p>
                     <notebook>
                         <page string="Products">
                             <field name="order_line_ids">
@@ -49,6 +47,18 @@
                                     <field name="margin_percent" widget="progressbar"/>
                                 </tree>
                             </field>
+                            <div>
+                                <group attrs="{'invisible':[('show_total_discounts', '=', False)]}">
+                                    <field name="discount_total"/>
+                                    <field name="discount_percent_total" widget="progressbar"/>
+                                </group>
+                            </div>
+                            <p class="oe_grey">
+                                Discount computation: Choose the way you want to compute and the discount mode. If you only choose a discount mode, the current discounts will be transformed. <br/>
+                                RESET: Reloads the data from the sale order, all applied changes will be lost. <br/>
+                                RESTORE: Reloads the original prices from the product, all applied changes will be lost. <br/>
+                                CHANGE PRICE: Writes the computed prices to the Sale Order.
+                            </p>
                         </page>
                         <page string="View Options">
                             <group>
@@ -57,6 +67,7 @@
                                 <field name="show_sections"/>
                                 <field name="show_quantity"/>
                                 <field name="show_amount_tax"/>
+                                <field name="show_total_discounts"/>
                             </group>
                         </page>
                     </notebook>
