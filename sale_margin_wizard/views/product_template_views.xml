@@ -1,0 +1,33 @@
+<odoo>
+      <record id="action_product_template_margin_wizard" model="ir.actions.act_window">
+          <field name="name">Create Product template margin wizard</field>
+          <field name="res_model">product.template.margin.wizard</field>
+          <field name="view_type">form</field>
+          <field name="view_mode">form</field>
+          <field name="target">new</field>
+      </record>
+
+      <record id="product_template_form_margin_wizard" model="ir.ui.view">
+          <field name="name">product.template.form.margin.wizard</field>
+          <field name="model">product.template</field>
+          <field name="inherit_id" ref="product.product_template_only_form_view"/>
+          <field name="priority">100</field>
+          <field name="arch" type="xml">
+              <header position="inside">
+                  <button name="create_margin_wizard" string="Pricing" type="object" groups="sale_margin_extend.groups_sale_margin"/>
+              </header>
+            <!--
+              <xpath expr="//button[@name='print_quotation']" position="after">
+                  <button name="create_margin_wizard" type="object" string="Pricing" groups="sale_margin_extend.groups_sale_margin"/>
+              </xpath>-->
+          </field>
+      </record>
+
+      <act_window id="act_window_product_template_margin_wizard"
+          name="Generate Product Template Wizard"
+          src_model="product.template"
+          res_model="product.template.margin.wizard"
+          view_mode="form"
+          target="new"
+          key2="client_action_multi"/>
+</odoo>

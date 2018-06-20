@@ -23,7 +23,9 @@
 
     # always loaded
     'data': [
+        'wizard/product_template_wizard_form.xml',
         'wizard/sale_order_wizard_form.xml',
+        'views/product_template_views.xml',
         'views/sale_order_views.xml',
     ],
 }

@@ -1,0 +1,63 @@
+<odoo>
+
+        <record id="product_template_margin_wizard_form" model="ir.ui.view">
+            <field name="name">product.template.margin.wizard.form</field>
+            <field name="model">product.template.margin.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Product Sale Margins">
+                <sheet>
+                    <div class="oe_title">
+                            <field name="product_tmpl_id"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="price_target" attrs="{'readonly': ['|', ('margin_target', '!=', 0), ('discount_target', '!=', 0)]}"/>
+                            <field name="margin_target" attrs="{'readonly': ['|', ('price_target', '!=', 0), ('discount_target', '!=', 0)]}"/>
+                            <field name="discount_target" attrs="{'readonly': ['|', ('price_target', '!=', 0), ('margin_target', '!=', 0)]}"/>
+                            <field name="discount_mode"/>
+                        </group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="price_regular" readonly="1" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}" />
+                            <field name="price_discounted" readonly="1" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                            <field name="margin_total" readonly="1"/>
+                            <field name="margin_percent_total" widget="progressbar" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Products">
+                            <field name="margin_line_ids">
+                                <tree string="Product Margin Lines" editable="bottom" delete="false" create="false">
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="price_unit" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                                    <field name="cost_unit" attrs="{'column_invisible':[('parent.show_unit_cost', '=', False)]}" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                                    <field name="discount" attrs="{'readonly': [('discount_absolute', '!=', 0)]}"/>
+                                    <field name="discount_absolute" attrs="{'readonly': [('discount', '!=', 0)]}" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                                    <field name="amount_tax" attrs="{'column_invisible':[('parent.show_amount_tax', '=', False)]}" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                                    <field name="margin" readonly="1" attrs="{'column_invisible':[('parent.show_absolute_margin', '=', False)]}" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                                    <field name="margin_percent" widget="progressbar"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="View Options">
+                            <group>
+                                <field name="show_unit_cost"/>
+                                <field name="show_absolute_margin"/>
+                                <field name="show_amount_tax"/>
+                            </group>
+                            <group>
+                                <field name="number_margin_lines"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                    <footer>
+                      <!--  <button name="manipulate_prices" string="Change Prices" type="object" class="btn-primary"/> -->
+                        <button special="cancel" string="Cancel" class="btn-default"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+</odoo>
