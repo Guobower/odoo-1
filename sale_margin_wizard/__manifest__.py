@@ -19,7 +19,7 @@
     'version': '11.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['sale_margin_extend','order_line_absolute_discount'],
+    'depends': ['sale_margin_extend','order_line_absolute_discount', 'beckhoff_price_gross'],
 
     # always loaded
     'data': [

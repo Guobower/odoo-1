@@ -11,6 +11,7 @@ class SaleOrder(models.Model):
         vals = {
             'product_tmpl_id': self.id,
             'price_regular': self.lst_price,
+            'price_special': self.special_offer,
             'cost_unit': self.standard_price,
             #'taxes_id': taxes,
         }

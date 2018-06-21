@@ -27,6 +27,7 @@ class ProductTemplateMarginWizard(models.TransientModel):
     discount_mode = fields.Selection(string='Discount Mode', selection='discount_mode_selection')
 
     price_regular = fields.Float(string='Regular Price')
+    price_special = fields.Float(string='Special Price')
     price_regular_net = fields.Float(string='Regular Net Price')
     cost_unit = fields.Float(string='Cost')
     taxes_id = fields.Many2many('account.tax', string='Taxes', domain=['|', ('active', '=', False), ('active', '=', True)])
@@ -37,7 +38,7 @@ class ProductTemplateMarginWizard(models.TransientModel):
     discount_percent_total = fields.Float(string='Discount Total (%)', compute='compute_total', digits=dp.get_precision('Discount'))
 
     # View Option fields
-    show_unit_cost = fields.Boolean(string="Show Unit Cost", default=True)
+    show_unit_cost = fields.Boolean(string="Show Unit Cost", default=False)
     show_absolute_margin = fields.Boolean(string="Show Absolute Margin", default=True)
     show_amount_tax = fields.Boolean(string="Show Amount Tax", default=False)
 
@@ -51,9 +52,23 @@ class ProductTemplateMarginWizard(models.TransientModel):
     def create_margin_lines(self, product):
         price_dif = (self.price_regular - self.cost_unit) / self.number_margin_lines
         finished = False
+        special = False
         counter = 0
         while not finished:
             price_unit = self.cost_unit + price_dif * counter
+            if price_unit > self.price_special and special == False and self.price_special != 0:
+                discount = 100 - self.price_special / self.price_regular * 100
+                discount_absolute = self.price_regular - self.price_special
+                margin_line = self.env['product.template.margin.line.wizard'].create({
+                    'product_uom_qty': 1,
+                    'product_template_id': self.id,
+                    'price_unit': self.price_special,
+                    'cost_unit': self.cost_unit,
+                    'discount': discount,
+                    'discount_absolute': discount_absolute,
+                })
+                self.margin_line_ids += margin_line
+                special = True
             discount = 100 - price_unit / self.price_regular * 100
             discount_absolute = self.price_regular - price_unit
             margin_line = self.env['product.template.margin.line.wizard'].create({
@@ -94,5 +109,6 @@ class ProductTemplateMarginLineWizard(models.TransientModel):
     @api.depends('price_unit', 'cost_unit', 'discount', 'discount_absolute')
     def compute_margin(self):
         self.margin = self.price_unit - self.cost_unit
-        self.margin_percent = self.margin / self.price_unit * 100
+        if self.price_unit:
+            self.margin_percent = self.margin / self.price_unit * 100
         self.discount = 100 - self.price_unit / self.product_template_id.price_regular * 100
