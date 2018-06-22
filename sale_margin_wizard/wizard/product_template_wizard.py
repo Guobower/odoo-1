@@ -87,22 +87,50 @@ class ProductTemplateMarginWizard(models.TransientModel):
         return True
 
     @api.onchange('price_target')
-    def compute_target_fields(self):
-        for line in self.margin_line_ids:
-            if line.price_unit > self.price_target:
-                line.price_unit = self.price_target
-                line.discount = 100 - self.price_target / self.price_regular * 100
-                line.discount_absolute = self.price_regular - self.price_target
-                break
+    def compute_price_target(self):
+        if self.price_target == 0:
+            for line in self.margin_line_ids:
+                if line.is_target_line == True:
+                    line.is_target_line = False
+        else:
+            for line in self.margin_line_ids:
+                if line.price_unit > self.price_target:
+                    line.price_unit = self.price_target
+                    line.is_target_line = True
+                    break
 
     @api.onchange('discount_target')
-    def compute_target_fields(self):
+    def compute_discount_target(self):
+        if self.discount_target == 0:
+            for line in self.margin_line_ids:
+                if line.is_target_line == True:
+                    line.is_target_line = False
+        else:
+            target_price = self.price_regular - self.price_regular * self.discount_target / 100
+            for line in self.margin_line_ids:
+                if line.price_unit > target_price:
+                    line.price_unit = target_price
+                    line.is_target_line = True
+                    break
+
+    @api.onchange('margin_target')
+    def compute_margin_target(self):
+        if self.margin_target == 0:
+            for line in self.margin_line_ids:
+                if line.is_target_line == True:
+                    line.is_target_line = False
+        else:
+            target_price = self.cost_unit / ((100 - self.margin_target) / 100)
+            for line in self.margin_line_ids:
+                if line.price_unit > target_price:
+                    line.price_unit = target_price
+                    line.is_target_line = True
+                    break
+
+    @api.onchange('cost_unit')
+    def set_cost_price(self):
         for line in self.margin_line_ids:
-            if line.discount > self.discount_target:
-                line.price_unit = self.price_target - self.price_target * self.discount_target * 100
-                line.discount = self.discount_target
-                line.discount_absolute = self.price_regular - line.price_unit
-                break
+            line.cost_unit = self.cost_unit
 
 
 class ProductTemplateMarginLineWizard(models.TransientModel):
@@ -118,8 +146,9 @@ class ProductTemplateMarginLineWizard(models.TransientModel):
     currency_id = fields.Many2one('res.currency', related="wizard_id.currency_id", string="Currency")
     amount_tax = fields.Float(string='Tax Amount')
 
-    margin = fields.Float(string='Margin', compute="compute_margin", digits=dp.get_precision('Product Price'))
+    margin = fields.Float(string='Margin (€)', compute="compute_margin", digits=dp.get_precision('Product Price'))
     margin_percent = fields.Float(string='Margin (%)', compute="compute_margin", digits=dp.get_precision('Discount'))
+    is_target_line = fields.Boolean(string="Target Line", default=False)
 
 
     @api.one
@@ -129,3 +158,4 @@ class ProductTemplateMarginLineWizard(models.TransientModel):
         if self.price_unit:
             self.margin_percent = self.margin / self.price_unit * 100
         self.discount = 100 - self.price_unit / self.wizard_id.price_regular * 100
+        self.discount_absolute = self.wizard_id.price_regular - self.price_unit
