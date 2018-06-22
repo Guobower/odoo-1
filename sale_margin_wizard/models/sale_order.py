@@ -26,7 +26,7 @@ class SaleOrder(models.Model):
             'res_model': 'sale.order.margin.wizard',
             'views': [(view.id, 'form')],
             'view_id': view.id,
-            'target': 'new',
+            'target': 'current',
             'res_id': wizard.id,
             'context': vals,
         }

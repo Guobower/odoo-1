@@ -176,7 +176,6 @@ class SaleOrderMarginWizard(models.TransientModel):
             self.price_target = 0
 
 
-
 class SaleOrderMarginLineWizard(models.TransientModel):
     _name = 'sale.order.margin.line.wizard'
     _description = 'Margins for Sale Order Lines'
@@ -217,3 +216,30 @@ class SaleOrderMarginLineWizard(models.TransientModel):
             if selling_price:
                 self.margin_percent = self.margin / selling_price * 100
         self.price_discounted = selling_price
+
+
+    def create_product_margin_wizard(self):
+        view = self.env.ref('sale_margin_wizard.product_template_margin_wizard_form')
+        taxes = [(6, 0, self.taxes_id.ids)] or False
+        vals = {
+            'product_tmpl_id': self.product_id.product_tmpl_id.id,
+            'price_regular': self.product_id.product_tmpl_id.lst_price,
+            'price_special': self.product_id.product_tmpl_id.special_offer,
+            'cost_unit': self.product_id.product_tmpl_id.standard_price,
+            #'taxes_id': taxes,
+        }
+        wizard = self.env['product.template.margin.wizard'].create(vals)
+        wizard.create_margin_lines(self)
+        return {
+            'name': ('Product Margin Wizard'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'product.template.margin.wizard',
+            'src_model': 'sale.order.margin.wizard',
+            'views': [(view.id, 'form')],
+            'view_id': view.id,
+            'target': 'new',
+            'res_id': wizard.id,
+            'context': vals,
+        }

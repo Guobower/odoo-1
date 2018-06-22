@@ -45,6 +45,7 @@
                                     <field name="price_discounted" readonly="1" widget="monetary"/>
                                     <field name="margin" readonly="1" attrs="{'column_invisible':[('parent.show_absolute_margin', '=', False)]}"/>
                                     <field name="margin_percent" widget="progressbar"/>
+                                    <button name="create_product_margin_wizard" type="object" string="Product"/>
                                 </tree>
                             </field>
                             <div>
