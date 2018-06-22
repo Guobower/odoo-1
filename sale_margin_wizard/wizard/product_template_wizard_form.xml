@@ -16,6 +16,7 @@
                             <field name="margin_target" attrs="{'readonly': ['|', ('price_target', '!=', 0), ('discount_target', '!=', 0)]}"/>
                             <field name="discount_target" attrs="{'readonly': ['|', ('price_target', '!=', 0), ('margin_target', '!=', 0)]}"/>
                             <field name="discount_mode"/>
+                            <field name="id"/>
                         </group>
                         <group>
                             <field name="company_id" invisible="1"/>
@@ -29,7 +30,7 @@
                     <notebook>
                         <page string="Products">
                             <field name="margin_line_ids">
-                                <tree string="Product Margin Lines" editable="bottom" delete="false" create="false" decoration-danger="price_unit==parent.price_special" decoration-info="price_unit==parent.price_regular">
+                                <tree string="Product Margin Lines" editable="bottom" delete="false" create="false" decoration-danger="price_unit==parent.price_special" decoration-info="price_unit==parent.price_regular" decoration-bf="price_unit==parent.price_target">
                                     <field name="currency_id" invisible="1"/>
                                     <field name="price_unit" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
                                     <field name="cost_unit" attrs="{'column_invisible':[('parent.show_unit_cost', '=', False)]}" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>

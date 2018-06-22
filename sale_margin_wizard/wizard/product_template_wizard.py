@@ -14,7 +14,7 @@ class ProductTemplateMarginWizard(models.TransientModel):
             ('absolute', 'Absolute (Euro)'),
             ]
 
-    margin_line_ids = fields.One2many('product.template.margin.line.wizard', 'product_template_id')
+    margin_line_ids = fields.One2many('product.template.margin.line.wizard', 'wizard_id')
     product_tmpl_id = fields.Many2one('product.template', string='Product Template')
     currency_id = fields.Many2one('res.currency', string='Currency', required=True,
                                   default=lambda self: self.env.user.company_id.currency_id.id)
@@ -60,8 +60,7 @@ class ProductTemplateMarginWizard(models.TransientModel):
                 discount = 100 - self.price_special / self.price_regular * 100
                 discount_absolute = self.price_regular - self.price_special
                 margin_line = self.env['product.template.margin.line.wizard'].create({
-                    'product_uom_qty': 1,
-                    'product_template_id': self.id,
+                    'wizard_id': self.id,
                     'price_unit': self.price_special,
                     'cost_unit': self.cost_unit,
                     'discount': discount,
@@ -72,8 +71,7 @@ class ProductTemplateMarginWizard(models.TransientModel):
             discount = 100 - price_unit / self.price_regular * 100
             discount_absolute = self.price_regular - price_unit
             margin_line = self.env['product.template.margin.line.wizard'].create({
-                'product_uom_qty': 1,
-                'product_template_id': self.id,
+                'wizard_id': self.id,
                 'price_unit': price_unit,
                 'cost_unit': self.cost_unit,
                 'discount': discount,
@@ -88,17 +86,36 @@ class ProductTemplateMarginWizard(models.TransientModel):
     def compute_total(self):
         return True
 
+    @api.onchange('price_target')
+    def compute_target_fields(self):
+        for line in self.margin_line_ids:
+            if line.price_unit > self.price_target:
+                line.price_unit = self.price_target
+                line.discount = 100 - self.price_target / self.price_regular * 100
+                line.discount_absolute = self.price_regular - self.price_target
+                break
+
+    @api.onchange('discount_target')
+    def compute_target_fields(self):
+        for line in self.margin_line_ids:
+            if line.discount > self.discount_target:
+                line.price_unit = self.price_target - self.price_target * self.discount_target * 100
+                line.discount = self.discount_target
+                line.discount_absolute = self.price_regular - line.price_unit
+                break
+
+
 class ProductTemplateMarginLineWizard(models.TransientModel):
     _name = 'product.template.margin.line.wizard'
     _description = 'Product Margins'
 
-    product_template_id = fields.Many2one('product.template.margin.wizard', string='Product Template', index=True, required=True, ondelete='cascade')
+    wizard_id = fields.Many2one('product.template.margin.wizard', string='Product Template', index=True, required=True, ondelete='cascade')
     #product_id = fields.Many2one('product.product', string='Product')
     price_unit = fields.Float(string='Unit Price', digits=dp.get_precision('Product Price'))
     cost_unit = fields.Float(string='Unit Cost', digits=dp.get_precision('Product Price'))
     discount = fields.Float(string='Discount (%)', digits=dp.get_precision('Discount'))
     discount_absolute = fields.Float(string='Discount (€)')
-    currency_id = fields.Many2one('res.currency', related="product_template_id.currency_id", string="Currency")
+    currency_id = fields.Many2one('res.currency', related="wizard_id.currency_id", string="Currency")
     amount_tax = fields.Float(string='Tax Amount')
 
     margin = fields.Float(string='Margin', compute="compute_margin", digits=dp.get_precision('Product Price'))
@@ -111,4 +128,4 @@ class ProductTemplateMarginLineWizard(models.TransientModel):
         self.margin = self.price_unit - self.cost_unit
         if self.price_unit:
             self.margin_percent = self.margin / self.price_unit * 100
-        self.discount = 100 - self.price_unit / self.product_template_id.price_regular * 100
+        self.discount = 100 - self.price_unit / self.wizard_id.price_regular * 100
