@@ -25,12 +25,14 @@ class ProductTemplateMarginWizard(models.TransientModel):
     price_target = fields.Float(string='Target Price', help='Discounts all lines in relation to their price.')
     discount_target = fields.Float(string='Target Discount', help='Set a target discounts which will be applied to the lines according to discount mode')
     discount_mode = fields.Selection(string='Discount Mode', selection='discount_mode_selection')
-
+    tax_mode = fields.Selection([('net', 'Net'),('gross', 'Gross')], string="Tax mode", default='gross')
     price_regular = fields.Float(string='Regular Price')
     price_special = fields.Float(string='Special Price')
     price_regular_net = fields.Float(string='Regular Net Price')
+    has_special_price = fields.Boolean(string='Has Special Price')
     cost_unit = fields.Float(string='Cost')
     taxes_id = fields.Many2many('account.tax', string='Taxes', domain=['|', ('active', '=', False), ('active', '=', True)])
+    tax_factor = fields.Float(string='Tax Factor')
     price_discounted = fields.Float(string='Amount Total', compute="compute_total", digits=dp.get_precision('Product Price'))
     margin_total = fields.Float(string='Margin Total', compute="compute_total", digits=dp.get_precision('Product Price'))
     margin_percent_total = fields.Float(string='Margin Total (%)', compute="compute_total", digits=dp.get_precision('Discount'))
@@ -50,12 +52,22 @@ class ProductTemplateMarginWizard(models.TransientModel):
 
     @api.onchange('number_margin_lines')
     def create_margin_lines(self, product):
-        price_dif = (self.price_regular - self.cost_unit) / self.number_margin_lines
+        # compute the cost price plus tax
+        amount_tax = 0
+        for tax in self.taxes_id:
+            amount_tax += tax.amount * self.cost_unit / 100
+        gross_base_price = self.cost_unit + amount_tax
+        # compute the price difference between two one2many margin lines
+        price_dif = (self.price_regular - gross_base_price) / self.number_margin_lines
         finished = False
         special = False
         counter = 0
         while not finished:
-            price_unit = self.cost_unit + price_dif * counter
+            price_unit = gross_base_price + price_dif * counter
+            amount_tax = 0
+            for tax in self.taxes_id:
+                amount_tax += tax.amount * price_unit / 100
+            # Insert a margin line for the special price if one is given
             if price_unit > self.price_special and special == False and self.price_special != 0:
                 discount = 100 - self.price_special / self.price_regular * 100
                 discount_absolute = self.price_regular - self.price_special
@@ -65,6 +77,8 @@ class ProductTemplateMarginWizard(models.TransientModel):
                     'cost_unit': self.cost_unit,
                     'discount': discount,
                     'discount_absolute': discount_absolute,
+                    'amount_tax': amount_tax,
+                    'tax_mode_line': True,
                 })
                 self.margin_line_ids += margin_line
                 special = True
@@ -76,6 +90,8 @@ class ProductTemplateMarginWizard(models.TransientModel):
                 'cost_unit': self.cost_unit,
                 'discount': discount,
                 'discount_absolute': discount_absolute,
+                'amount_tax': amount_tax,
+                'tax_mode_line': True,
             })
             self.margin_line_ids += margin_line
             counter += 1
@@ -133,6 +149,17 @@ class ProductTemplateMarginWizard(models.TransientModel):
             line.cost_unit = self.cost_unit
 
 
+    @api.onchange('tax_mode')
+    def compute_tax_mode(self):
+        for line in self.margin_line_ids:
+            if self.tax_mode == 'gross':
+                line.price_unit = line.price_unit * ((100 + self.tax_factor) / 100)
+                line.tax_mode_line = True
+            if self.tax_mode == 'net':
+                line.price_unit = line.price_unit / ((100 + self.tax_factor) / 100)
+                line.tax_mode_line = False
+
+
 class ProductTemplateMarginLineWizard(models.TransientModel):
     _name = 'product.template.margin.line.wizard'
     _description = 'Product Margins'
@@ -149,13 +176,26 @@ class ProductTemplateMarginLineWizard(models.TransientModel):
     margin = fields.Float(string='Margin (€)', compute="compute_margin", digits=dp.get_precision('Product Price'))
     margin_percent = fields.Float(string='Margin (%)', compute="compute_margin", digits=dp.get_precision('Discount'))
     is_target_line = fields.Boolean(string="Target Line", default=False)
+    tax_mode_line = fields.Boolean(string="Net/Gross", default=True)
 
 
     @api.one
     @api.depends('price_unit', 'cost_unit', 'discount', 'discount_absolute')
     def compute_margin(self):
-        self.margin = self.price_unit - self.cost_unit
-        if self.price_unit:
-            self.margin_percent = self.margin / self.price_unit * 100
-        self.discount = 100 - self.price_unit / self.wizard_id.price_regular * 100
-        self.discount_absolute = self.wizard_id.price_regular - self.price_unit
+        if self.wizard_id.tax_mode == 'gross':
+            net_price = self.price_unit / ((100 + self.wizard_id.tax_factor) / 100)
+            self.amount_tax  = self.price_unit - net_price
+            self.margin = self.price_unit - self.amount_tax -  self.cost_unit
+            if self.price_unit:
+                self.margin_percent = self.margin / self.price_unit * 100
+            if self.wizard_id.price_regular:
+                self.discount = 100 - self.price_unit / self.wizard_id.price_regular * 100
+            self.discount_absolute = self.wizard_id.price_regular - self.price_unit
+        if self.wizard_id.tax_mode == 'net':
+            self.amount_tax = self.price_unit * (self.wizard_id.tax_factor / 100)
+            self.margin = self.price_unit - self.cost_unit
+            if self.price_unit:
+                self.margin_percent = self.margin / self.price_unit * 100
+            if self.wizard_id.price_regular_net:
+                self.discount = 100 - self.price_unit / self.wizard_id.price_regular_net * 100
+            self.discount_absolute = self.wizard_id.price_regular_net - self.price_unit

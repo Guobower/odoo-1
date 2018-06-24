@@ -19,16 +19,20 @@
                         </group>
                         <group>
                             <field name="company_id" invisible="1"/>
-                            <field name="price_special" readonly="1" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                            <field name="price_regular_net" readonly="1" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                            <field name="price_special" readonly="1" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}" attrs="{'invisible':[('has_special_price', '=', False)]}" />
                             <field name="price_regular" readonly="1" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}" />
                             <field name="cost_unit" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                            <field name="tax_mode"/>
+                            <field name="tax_factor"/>
+                            <field name="has_special_price" invisible="1"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="Products">
                             <field name="margin_line_ids">
                                 <tree string="Product Margin Lines" editable="bottom" delete="false" create="false" decoration-danger="price_unit==parent.price_special"
-                                    decoration-info="price_unit==parent.price_regular" decoration-bf="is_target_line==True">
+                                    decoration-info="price_unit==parent.price_regular" decoration-bf="is_target_line==True" decoration-primary="price_unit==parent.price_regular_net">
                                     <field name="currency_id" invisible="1"/>
                                     <field name="price_unit" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
                                     <field name="cost_unit" attrs="{'column_invisible':[('parent.show_unit_cost', '=', False)]}" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
@@ -36,8 +40,9 @@
                                     <field name="discount_absolute" attrs="{'readonly': [('discount', '!=', 0)]}" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
                                     <field name="amount_tax" attrs="{'column_invisible':[('parent.show_amount_tax', '=', False)]}" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
                                     <field name="margin_percent" widget="progressbar"/>
-                                    <field name="margin" readonly="1" attrs="{'column_invisible':[('parent.show_absolute_margin', '=', False)]}" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>                                
+                                    <field name="margin" readonly="1" attrs="{'column_invisible':[('parent.show_absolute_margin', '=', False)]}" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
                                     <field name="is_target_line" invisible="1"/>
+                                    <field name="tax_mode_line"/>
                                 </tree>
                             </field>
                         </page>

@@ -220,13 +220,22 @@ class SaleOrderMarginLineWizard(models.TransientModel):
 
     def create_product_margin_wizard(self):
         view = self.env.ref('sale_margin_wizard.product_template_margin_wizard_form')
-        taxes = [(6, 0, self.taxes_id.ids)] or False
+        tax_factor = 0
+        for tax in self.taxes_id:
+            tax_factor += tax.amount
+        if self.product_id.special_offer > 0:
+            has_special_price = True
+        else:
+            has_special_price = False
         vals = {
             'product_tmpl_id': self.product_id.product_tmpl_id.id,
+            'price_regular_net': self.product_id.product_tmpl_id.gross_net,
             'price_regular': self.product_id.product_tmpl_id.lst_price,
             'price_special': self.product_id.product_tmpl_id.special_offer,
             'cost_unit': self.product_id.product_tmpl_id.standard_price,
-            #'taxes_id': taxes,
+            'has_special_price': has_special_price,
+            'tax_factor': tax_factor,
+            'taxes_id': [(6, 0, self.taxes_id.ids)] or False,
         }
         wizard = self.env['product.template.margin.wizard'].create(vals)
         wizard.create_margin_lines(self)
