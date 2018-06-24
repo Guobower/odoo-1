@@ -27,5 +27,6 @@
         'wizard/sale_order_wizard_form.xml',
         'views/product_template_views.xml',
         'views/sale_order_views.xml',
+        #'views/user.xml',
     ],
 }

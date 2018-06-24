@@ -174,6 +174,7 @@ class SaleOrderMarginWizard(models.TransientModel):
         if not self.discount_mode:
             self.margin_target = 0
             self.price_target = 0
+            self.discount_target = 0
 
 
 class SaleOrderMarginLineWizard(models.TransientModel):

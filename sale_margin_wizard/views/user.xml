@@ -1,0 +1,15 @@
+<odoo>
+  <record id="view_user_form_margin_defaults" model="ir.ui.view">
+      <field name="name">res.users.margin.form</field>
+      <field name="model">res.users</field>
+      <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+      <field name="priority">100</field>
+      <field name="arch" type="xml">
+          <xpath expr="//field[@name='company_id']" position="after">
+              <field name="price_mode" groups="sale_margin_extend.groups_sale_margin"/>
+              <field name="margin_lines" groups="sale_margin_extend.groups_sale_margin"/>
+          </xpath>
+      </field>
+  </record>
+
+</odoo>
