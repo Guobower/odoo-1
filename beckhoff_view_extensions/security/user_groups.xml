@@ -1,0 +1,7 @@
+<odoo>
+    <record id="groups_accounting_home_button_access" model="res.groups">
+        <field name="name">Can see Accounting Home Button</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+        <field name="comment">The User will see the Accounting home button on the start screen.</field>
+    </record>
+</odoo>

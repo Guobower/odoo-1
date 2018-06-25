@@ -19,12 +19,13 @@
     'version': '11.0',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','product_brand','point_of_sale', 'purchase', 'website'],
+    'depends': ['base','product_brand','point_of_sale', 'purchase', 'website', 'account'],
 
     # always loaded
     'data': [
         'templates/assets.xml',
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
+        'security/user_groups.xml',
         'views/partner_views.xml',
         'views/product_views.xml',
         'views/purchase_order_views.xml',
