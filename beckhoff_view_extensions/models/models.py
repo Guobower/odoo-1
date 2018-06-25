@@ -45,3 +45,8 @@ class MoveLine(models.Model):
     _inherit = 'stock.move.line'
 
     partner_id = fields.Many2one(related="move_id.picking_partner_id", string="Partner")
+
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+
+    partner_ref = fields.Char(string="Supplier Reference", help="The delivery order number of the supplier.")
