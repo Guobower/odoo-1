@@ -60,6 +60,7 @@ class SaleOrderMarginWizard(models.TransientModel):
                 'discount_absolute': line.discount_absolute,
                 'taxes_id': taxes,
                 'sale_order_line_id': line.id,
+                'amount_tax': line.price_tax,
             })
             self.order_line_ids += so_line
 
@@ -206,7 +207,7 @@ class SaleOrderMarginLineWizard(models.TransientModel):
         else:
             selling_price = self.price_unit * (1 - (self.discount or 0.0) / 100.0)
         taxes = self.taxes_id.compute_all(selling_price, self.order_id.currency_id, self.product_uom_qty, product=self.product_id, partner=self.order_id.sale_order_id.partner_shipping_id)
-        self.amount_tax = sum(t.get('amount', 0.0) for t in taxes.get('taxes', []) if t.price_include == True)
+        self.amount_tax = sum(t.get('amount', 0.0) for t in taxes.get('taxes', []))
         # If no fiscal position, the unit price is in gross and the amount_tax needs to be considered for margin computation
         if not self.order_id.sale_order_id.fiscal_position_id:
             self.margin = selling_price  - self.cost_unit - self.amount_tax
