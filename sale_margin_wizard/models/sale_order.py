@@ -29,4 +29,5 @@ class SaleOrder(models.Model):
             'target': 'current',
             'res_id': wizard.id,
             'context': vals,
+            'flags': {'form': {'action_buttons': True, 'options':{'mode': 'edit'}}}
         }

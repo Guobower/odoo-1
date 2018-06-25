@@ -16,6 +16,7 @@ class SaleOrderMarginWizard(models.TransientModel):
             ('absolute', 'Absolute (Euro)'),
             ]
 
+    name = fields.Char(string='Name', default='Sale Order Margin Wizard')
     order_line_ids = fields.One2many('sale.order.margin.line.wizard', 'order_id')
     sale_order_id = fields.Many2one('sale.order', string='Sale Order')
     partner_id = fields.Many2one('res.partner', string='Partner')
@@ -44,7 +45,21 @@ class SaleOrderMarginWizard(models.TransientModel):
     show_amount_tax = fields.Boolean(string="Show Amount Tax", default=False)
     show_total_discounts = fields.Boolean(string="Show Total Discounts", default=False)
 
-
+    def button_back_to_so(self):
+        # Necessary to open form view from tree view
+        tree_view = self.env.ref('sale.view_quotation_tree').id
+        form_view = self.env.ref('sale.view_order_form').id
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Sale Orders',
+            'res_model': 'sale.order',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_id': self.sale_order_id.id,
+            #'views': [(tree_view, 'tree'), (form_view, 'form')],
+            'views': [(form_view, 'form')],
+            #'context': {'search_default_helpdesk_ticket_id': self.id}
+        }
 
     def create_so_lines(self, s_order):
         for line in s_order.order_line:

@@ -5,80 +5,81 @@
             <field name="model">sale.order.margin.wizard</field>
             <field name="arch" type="xml">
                 <form string="Sale Order Margins">
-                <sheet>
-                    <div class="oe_title">
-                        <h1>
-                            <field name="sale_order_id" readonly="1" invisible="1"/>
-                        </h1>
-                    </div>
-                    <group>
-                        <group>
-                            <field name="partner_id" domain="[('customer','=',True)]" invisible="1"/>
-                            <field name="currency_id" invisible="1"/>
-                            <field name="price_target" attrs="{'readonly': ['|', ('margin_target', '!=', 0), ('discount_target', '!=', 0)]}"/>
-                            <field name="margin_target" attrs="{'readonly': ['|', ('price_target', '!=', 0), ('discount_target', '!=', 0)]}"/>
-                            <field name="discount_target" attrs="{'readonly': ['|', ('price_target', '!=', 0), ('margin_target', '!=', 0)]}"/>
-                            <field name="discount_mode"/>
-                        </group>
-                        <group>
-                            <field name="company_id" invisible="1"/>
-                            <field name="sale_order_id" invisible="1"/>
-                            <field name="amount_total" readonly="1" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
-                            <field name="margin_total" readonly="1" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
-                            <field name="margin_percent_total" widget="progressbar" readonly="1"/>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Products">
-                            <field name="order_line_ids">
-                                <tree string="Sale Order Lines" editable="bottom" delete="false" create="false">
-                                    <field name="section" readonly="1" attrs="{'column_invisible':[('parent.show_sections', '=', False)]}"/>
-                                    <field name="product_id" readonly="1"/>
-                                    <field name="product_uom_qty" attrs="{'column_invisible':[('parent.show_quantity', '=', False)]}"/>
+                  <header>
+                      <button name="manipulate_prices" string="Change Prices" type="object" class="btn-primary"/>
+                      <button name="reset_so_lines" string="Reset" type="object"/>
+                      <button name="restore_so_lines_prices" string="Restore" type="object"/>
+                      <button special="cancel" string="Cancel" class="btn-default"/>
+                      <button name="button_back_to_so" string="Back to Sale Order" type="object" invisible="1"/>
+                  </header>
+                  <sheet>
+                      <div class="oe_title">
+                          <h1>
+                              <field name="sale_order_id" readonly="1" invisible="1"/>
+                          </h1>
+                      </div>
+                      <group>
+                          <group>
+                              <field name="partner_id" domain="[('customer','=',True)]" invisible="1"/>
+                              <field name="currency_id" invisible="1"/>
+                              <field name="price_target" attrs="{'readonly': ['|', ('margin_target', '!=', 0), ('discount_target', '!=', 0)]}"/>
+                              <field name="margin_target" attrs="{'readonly': ['|', ('price_target', '!=', 0), ('discount_target', '!=', 0)]}"/>
+                              <field name="discount_target" attrs="{'readonly': ['|', ('price_target', '!=', 0), ('margin_target', '!=', 0)]}"/>
+                              <field name="discount_mode"/>
+                          </group>
+                          <group>
+                              <field name="company_id" invisible="1"/>
+                              <field name="sale_order_id" invisible="1"/>
+                              <field name="amount_total" readonly="1" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                              <field name="margin_total" readonly="1" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
+                              <field name="margin_percent_total" widget="progressbar" readonly="1"/>
+                          </group>
+                      </group>
+                      <notebook>
+                          <page string="Products">
+                              <field name="order_line_ids">
+                                  <tree string="Sale Order Lines" editable="bottom" delete="false" create="false">
+                                      <field name="section" readonly="1" attrs="{'column_invisible':[('parent.show_sections', '=', False)]}"/>
+                                      <field name="product_id" readonly="1"/>
+                                      <field name="product_uom_qty" attrs="{'column_invisible':[('parent.show_quantity', '=', False)]}"/>
 
-                                    <field name="price_unit" />
-                                    <field name="cost_unit" attrs="{'column_invisible':[('parent.show_unit_cost', '=', False)]}"/>
-                                    <field name="discount" attrs="{'readonly': [('discount_absolute', '!=', 0)]}"/>
-                                    <field name="discount_absolute" attrs="{'readonly': [('discount', '!=', 0)]}"/>
-                                    <field name="amount_tax" attrs="{'column_invisible':[('parent.show_amount_tax', '=', False)]}"/>
-                                    <field name="taxes_id" invisible="1"/>
-                                    <field name="price_discounted" readonly="1" widget="monetary"/>
-                                    <field name="margin" readonly="1" attrs="{'column_invisible':[('parent.show_absolute_margin', '=', False)]}"/>
-                                    <field name="margin_percent" widget="progressbar"/>
-                                    <button name="create_product_margin_wizard" type="object" string="Product"/>
-                                </tree>
-                            </field>
-                            <div>
-                                <group attrs="{'invisible':[('show_total_discounts', '=', False)]}">
-                                    <field name="discount_total"/>
-                                    <field name="discount_percent_total" widget="progressbar"/>
-                                </group>
-                            </div>
-                            <p class="oe_grey">
-                                Discount computation: Choose the way you want to compute and the discount mode. If you only choose a discount mode, the current discounts will be transformed. <br/>
-                                RESET: Reloads the data from the sale order, all applied changes will be lost. <br/>
-                                RESTORE: Reloads the original prices from the product, all applied changes will be lost. <br/>
-                                CHANGE PRICE: Writes the computed prices to the Sale Order.
-                            </p>
-                        </page>
-                        <page string="View Options">
-                            <group>
-                                <field name="show_unit_cost"/>
-                                <field name="show_absolute_margin"/>
-                                <field name="show_sections"/>
-                                <field name="show_quantity"/>
-                                <field name="show_amount_tax"/>
-                                <field name="show_total_discounts"/>
-                            </group>
-                        </page>
-                    </notebook>
-                </sheet>
-                    <footer>
-                        <button name="manipulate_prices" string="Change Prices" type="object" class="btn-primary"/>
-                        <button name="reset_so_lines" string="Reset" type="object"/>
-                        <button name="restore_so_lines_prices" string="Restore" type="object"/>
-                        <button special="cancel" string="Cancel" class="btn-default"/>
-                    </footer>
+                                      <field name="price_unit" />
+                                      <field name="cost_unit" attrs="{'column_invisible':[('parent.show_unit_cost', '=', False)]}"/>
+                                      <field name="discount" attrs="{'readonly': [('discount_absolute', '!=', 0)]}"/>
+                                      <field name="discount_absolute" attrs="{'readonly': [('discount', '!=', 0)]}"/>
+                                      <field name="amount_tax" attrs="{'column_invisible':[('parent.show_amount_tax', '=', False)]}"/>
+                                      <field name="taxes_id" invisible="1"/>
+                                      <field name="price_discounted" readonly="1" widget="monetary"/>
+                                      <field name="margin" readonly="1" attrs="{'column_invisible':[('parent.show_absolute_margin', '=', False)]}"/>
+                                      <field name="margin_percent" widget="progressbar"/>
+                                      <button name="create_product_margin_wizard" type="object" string="Product"/>
+                                  </tree>
+                              </field>
+                              <div>
+                                  <group attrs="{'invisible':[('show_total_discounts', '=', False)]}">
+                                      <field name="discount_total"/>
+                                      <field name="discount_percent_total" widget="progressbar"/>
+                                  </group>
+                              </div>
+                              <p class="oe_grey">
+                                  Discount computation: Choose the way you want to compute and the discount mode. If you only choose a discount mode, the current discounts will be transformed. <br/>
+                                  RESET: Reloads the data from the sale order, all applied changes will be lost. <br/>
+                                  RESTORE: Reloads the original prices from the product, all applied changes will be lost. <br/>
+                                  CHANGE PRICE: Writes the computed prices to the Sale Order.
+                              </p>
+                          </page>
+                          <page string="View Options">
+                              <group>
+                                  <field name="show_unit_cost"/>
+                                  <field name="show_absolute_margin"/>
+                                  <field name="show_sections"/>
+                                  <field name="show_quantity"/>
+                                  <field name="show_amount_tax"/>
+                                  <field name="show_total_discounts"/>
+                              </group>
+                          </page>
+                      </notebook>
+                  </sheet>
                 </form>
             </field>
         </record>
