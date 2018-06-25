@@ -6,7 +6,6 @@ class beckhoff_view_extensions(models.Model):
     _inherit = 'product.product'
 
     list_price = fields.Float(track_visibility='OnChange')
-    name = fields.Char(track_visibility='OnChange')
     barcode = fields.Char(track_visibility='OnChange')
     active = fields.Boolean(track_visibility='OnChange')
 
