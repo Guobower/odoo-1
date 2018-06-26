@@ -47,6 +47,7 @@ class SaleOrderMarginWizard(models.TransientModel):
 
     def button_back_to_so(self):
         # Necessary to open form view from tree view
+        # TODO: Thius function adds another level in the breadcrumb, jump back to the first instance
         tree_view = self.env.ref('sale.view_quotation_tree').id
         form_view = self.env.ref('sale.view_order_form').id
         return {
@@ -116,6 +117,7 @@ class SaleOrderMarginWizard(models.TransientModel):
             line.sale_order_line_id.discount_absolute = line.discount_absolute
             line.sale_order_line_id.price_unit = line.price_unit
             line.sale_order_line_id.purchase_price = line.cost_unit
+        return self.button_back_to_so()
 
 
     # TODO: should work with gross/net unit prices

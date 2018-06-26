@@ -9,8 +9,8 @@
                       <button name="manipulate_prices" string="Change Prices" type="object" class="btn-primary"/>
                       <button name="reset_so_lines" string="Reset" type="object"/>
                       <button name="restore_so_lines_prices" string="Restore" type="object"/>
-                      <button special="cancel" string="Cancel" class="btn-default"/>
-                      <button name="button_back_to_so" string="Back to Sale Order" type="object" invisible="1"/>
+                      <!-- <button special="cancel" string="Cancel" class="btn-default"/> -->
+                      <button name="button_back_to_so" string="Back to Sale Order" type="object" invisible="0"/>
                   </header>
                   <sheet>
                       <div class="oe_title">
@@ -42,7 +42,6 @@
                                       <field name="section" readonly="1" attrs="{'column_invisible':[('parent.show_sections', '=', False)]}"/>
                                       <field name="product_id" readonly="1"/>
                                       <field name="product_uom_qty" attrs="{'column_invisible':[('parent.show_quantity', '=', False)]}"/>
-
                                       <field name="price_unit" />
                                       <field name="cost_unit" attrs="{'column_invisible':[('parent.show_unit_cost', '=', False)]}"/>
                                       <field name="discount" attrs="{'readonly': [('discount_absolute', '!=', 0)]}"/>

@@ -26,8 +26,9 @@ class SaleOrder(models.Model):
             'res_model': 'sale.order.margin.wizard',
             'views': [(view.id, 'form')],
             'view_id': view.id,
-            'target': 'current',
+            'target': 'inline',
             'res_id': wizard.id,
             'context': vals,
-            'flags': {'form': {'action_buttons': True, 'options':{'mode': 'edit'}}}
+            #'flags': {'form': {'action_buttons': True, 'options':{'mode': 'edit'}}}
+            #'flags': {'initial_mode': 'edit'}
         }
