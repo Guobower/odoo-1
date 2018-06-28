@@ -2,6 +2,29 @@
 
 from odoo import models, fields, api
 
+class RepairType(models.Model):
+    _name = 'mrp.repair.type'
+    _description = 'Repair Type'
+    _order = 'sequence, id'
+
+    active = fields.Boolean('Active', default=True)
+    name = fields.Char(required=True, translate=True)
+    sequence = fields.Integer('Sequence', default=10)
+    invoice_method = fields.Selection(string='Invoice Method', selection='repair_type_sel')
+    invoice_address = fields.Many2one('res.partner', string='Invoice Address')
+    tag_ids = fields.Many2many('mrp.repair.tag', string='Tags')
+    kanban_color = fields.Integer('Color Index')
+    technician = fields.Many2one('res.users', string='Technician', help="Sets a default Technician for every Repair Order of this type.")
+
+    @api.model
+    def repair_type_sel(self):
+        return [
+            ('none', 'No Invoice'),
+            ('b4repair', 'Before Repair'),
+            ('after_repair', 'After Repair'),
+            ]
+
+
 class RepairOrder(models.Model):
     _inherit = 'mrp.repair'
     _order = 'state'
@@ -43,6 +66,8 @@ class RepairOrder(models.Model):
     repair_type = fields.Many2one(comodel_name='mrp.repair.type', string="Repair Type", track_visibility='onchange', default=_get_default_repair_type)
     currency_id = fields.Many2one(comodel_name="res.currency", string="Currency",
         default=lambda self: self.env.user.company_id.currency_id)
+    fees_lines = fields.One2many(readonly=False, states={'done':[('readonly', True)]})
+    operations = fields.One2many(readonly=False, states={'done':[('readonly', True)]})
 
     # Advance Payment fields
     pos_order_ids = fields.One2many('pos.order.line', 'order_id')
@@ -254,28 +279,6 @@ class RepairStage(models.Model):
     sequence = fields.Integer('Sequence', default=10)
     is_close = fields.Boolean('Closing Kanban Stage', help='Tickets in this stage are considered done.')
     fold = fields.Boolean('Folded', help="Folded in Kanban view")
-
-class RepairType(models.Model):
-    _name = 'mrp.repair.type'
-    _description = 'Repair Type'
-    _order = 'sequence, id'
-
-    active = fields.Boolean('Active', default=True)
-    name = fields.Char(required=True, translate=True)
-    sequence = fields.Integer('Sequence', default=10)
-    invoice_method = fields.Selection(string='Invoice Method', selection='repair_type_sel')
-    invoice_address = fields.Many2one('res.partner', string='Invoice Address')
-    tag_ids = fields.Many2many('mrp.repair.tag', string='Tags')
-    kanban_color = fields.Integer('Color Index')
-    technician = fields.Many2one('res.users', string='Technician', help="Sets a default Technician for every Repair Order of this type.")
-
-    @api.model
-    def repair_type_sel(self):
-        return [
-            ('none', 'No Invoice'),
-            ('b4repair', 'Before Repair'),
-            ('after_repair', 'After Repair'),
-            ]
 
 
 
