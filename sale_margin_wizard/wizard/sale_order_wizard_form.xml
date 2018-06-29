@@ -33,6 +33,7 @@
                               <field name="amount_total" readonly="1" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
                               <field name="margin_total" readonly="1" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
                               <field name="margin_percent_total" widget="progressbar" readonly="1"/>
+                              <field name="tax_mode"/>
                           </group>
                       </group>
                       <notebook>
@@ -47,7 +48,7 @@
                                       <field name="discount" attrs="{'readonly': [('discount_absolute', '!=', 0)]}"/>
                                       <field name="discount_absolute" attrs="{'readonly': [('discount', '!=', 0)]}"/>
                                       <field name="amount_tax" attrs="{'column_invisible':[('parent.show_amount_tax', '=', False)]}"/>
-                                      <field name="taxes_id" invisible="1"/>
+                                      <field name="taxes_id" invisible="0" widget="many2many_tags"/>
                                       <field name="price_discounted" readonly="1" widget="monetary"/>
                                       <field name="margin" readonly="1" attrs="{'column_invisible':[('parent.show_absolute_margin', '=', False)]}"/>
                                       <field name="margin_percent" widget="progressbar"/>
@@ -68,13 +69,19 @@
                               </p>
                           </page>
                           <page string="View Options">
-                              <group>
-                                  <field name="show_unit_cost"/>
-                                  <field name="show_absolute_margin"/>
-                                  <field name="show_sections"/>
-                                  <field name="show_quantity"/>
-                                  <field name="show_amount_tax"/>
-                                  <field name="show_total_discounts"/>
+                            <group>
+                                  <group>
+                                      <field name="show_unit_cost"/>
+                                      <field name="show_absolute_margin"/>
+                                      <field name="show_sections"/>
+                                      <field name="show_quantity"/>
+                                      <field name="show_amount_tax"/>
+                                      <field name="show_total_discounts"/>
+                                  </group>
+                                  <group>
+                                      <field name="fiscal_position_gross"/>
+                                      <field name="fiscal_position_net"/>
+                                  </group>
                               </group>
                           </page>
                       </notebook>

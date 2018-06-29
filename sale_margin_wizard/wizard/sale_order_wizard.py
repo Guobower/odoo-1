@@ -30,12 +30,14 @@ class SaleOrderMarginWizard(models.TransientModel):
     price_target = fields.Float(string='Target Price', help='Discounts all lines in relation to their price.')
     discount_target = fields.Float(string='Target Discount', help='Set a target discounts which will be applied to the lines according to discount mode')
     discount_mode = fields.Selection(string='Discount Mode', selection='discount_mode_selection')
-
+    tax_mode = fields.Selection([('net', 'Net'),('gross', 'Gross')], string="Tax mode", default='gross', required=True)
     amount_total = fields.Float(string='Amount Total', compute="compute_total", digits=dp.get_precision('Product Price'))
     margin_total = fields.Float(string='Margin Total', compute="compute_total", digits=dp.get_precision('Product Price'))
     margin_percent_total = fields.Float(string='Margin Total (%)', compute="compute_total", digits=dp.get_precision('Discount'))
     discount_total = fields.Float(string='Discount Total', compute='compute_total', digits=dp.get_precision('Product Price'))
     discount_percent_total = fields.Float(string='Discount Total (%)', compute='compute_total', digits=dp.get_precision('Discount'))
+    fiscal_position_gross = fields.Many2one('account.fiscal.position', string='Fiscal Position Gross')
+    fiscal_position_net = fields.Many2one('account.fiscal.position', string='Fiscal Position Net')
 
     # View Option fields
     show_sections = fields.Boolean(string="Show Sections", default=False)
@@ -47,7 +49,7 @@ class SaleOrderMarginWizard(models.TransientModel):
 
     def button_back_to_so(self):
         # Necessary to open form view from tree view
-        # TODO: Thius function adds another level in the breadcrumb, jump back to the first instance
+        # TODO: This function adds another level in the breadcrumb, jump back to the first instance
         tree_view = self.env.ref('sale.view_quotation_tree').id
         form_view = self.env.ref('sale.view_order_form').id
         return {
@@ -103,12 +105,18 @@ class SaleOrderMarginWizard(models.TransientModel):
 
     @api.depends('order_line_ids.discount', 'order_line_ids.discount_absolute', 'order_line_ids.price_unit', 'order_line_ids.cost_unit')
     def compute_total(self):
+        #taxes = 0
         for line in self.order_line_ids:
             self.amount_total += line.price_discounted * line.product_uom_qty
             self.margin_total += line.margin * line.product_uom_qty
             self.discount_total += (line.product_id.lst_price - line.price_discounted) * line.product_uom_qty
-        self.margin_percent_total = self.margin_total / self.amount_total * 100
-        self.discount_percent_total = self.discount_total / self.amount_total * 100
+            taxes += line.amount_tax
+        if self.tax_mode == 'gross':
+            self.margin_percent_total = self.margin_total / (self.amount_total - taxes) * 100
+            self.discount_percent_total = self.discount_total / (self.amount_total - taxes) * 100
+        if self.tax_mode == 'net':
+            self.margin_percent_total = self.margin_total / self.amount_total * 100
+            self.discount_percent_total = self.discount_total / self.amount_total * 100
 
 
     def manipulate_prices(self):
@@ -120,7 +128,6 @@ class SaleOrderMarginWizard(models.TransientModel):
         return self.button_back_to_so()
 
 
-    # TODO: should work with gross/net unit prices
     @api.onchange('discount_mode')
     def compute_target_margin(self):
         if self.margin_target < 0 or self.margin_target > 100:
@@ -128,9 +135,24 @@ class SaleOrderMarginWizard(models.TransientModel):
         if self.margin_target > 0:
             self.reset_so_lines()
             for line in self.order_line_ids:
+                if line.cost_unit == 0:
+                    raise ValidationError("Operation aborted because one line has a cost of 0. Cannot compute target margin.")
+
                 line.discount = 0
                 line.discount_absolute = 0
-                selling_price = line.cost_unit / ((100 - self.margin_target) / 100)
+
+                if self.tax_mode == 'gross':
+                    # Since the tax is computed from the net price, we need to compute with the net fiscal pos/taxes
+                    # Otherwiese the tax is computed to be included resulting in a too low price
+                    selling_price = (line.cost_unit / ((100 - self.margin_target) / 100))
+                    line.taxes_id = self.fiscal_position_net.map_tax(line.taxes_id, line.product_id, self.sale_order_id.partner_shipping_id)
+                    taxes = line.taxes_id.compute_all(selling_price, self.currency_id, line.product_uom_qty, product=line.product_id, partner=self.sale_order_id.partner_shipping_id)
+                    amount_tax = sum(t.get('amount', 0.0) for t in taxes.get('taxes', []))
+                    selling_price += amount_tax
+                    line.taxes_id = self.fiscal_position_gross.map_tax(line.taxes_id, line.product_id, self.sale_order_id.partner_shipping_id)
+                if self.tax_mode == 'net':
+                    selling_price = line.cost_unit / ((100 - self.margin_target) / 100)
+
                 if self.discount_mode == 'relative':
                     line.discount = (line.price_unit - selling_price) / line.price_unit * 100
                 if self.discount_mode == 'absolute':
@@ -194,6 +216,20 @@ class SaleOrderMarginWizard(models.TransientModel):
             self.price_target = 0
             self.discount_target = 0
 
+    @api.onchange('tax_mode')
+    def compute_tax_mode(self):
+        for line in self.order_line_ids:
+            if self.tax_mode == 'gross':
+                taxes = line.taxes_id.compute_all(line.price_unit, self.currency_id, line.product_uom_qty, product=line.product_id, partner=self.sale_order_id.partner_shipping_id)
+                amount_tax = sum(t.get('amount', 0.0) for t in taxes.get('taxes', []))
+                line.taxes_id = self.fiscal_position_gross.map_tax(line.taxes_id, line.product_id, self.sale_order_id.partner_shipping_id)
+                line.price_unit = line.price_unit + amount_tax
+            if self.tax_mode == 'net':
+                taxes = line.taxes_id.compute_all(line.price_unit, self.currency_id, line.product_uom_qty, product=line.product_id, partner=self.sale_order_id.partner_shipping_id)
+                amount_tax = sum(t.get('amount', 0.0) for t in taxes.get('taxes', []))
+                line.taxes_id = self.fiscal_position_net.map_tax(line.taxes_id, line.product_id, self.sale_order_id.partner_shipping_id)
+                line.price_unit = line.price_unit - amount_tax
+
 
 class SaleOrderMarginLineWizard(models.TransientModel):
     _name = 'sale.order.margin.line.wizard'
@@ -216,7 +252,7 @@ class SaleOrderMarginLineWizard(models.TransientModel):
     price_discounted = fields.Float(string='Discounted Price', compute="compute_margin", digits=dp.get_precision('Product Price'))
 
     @api.one
-    @api.depends('price_unit', 'cost_unit', 'discount', 'discount_absolute')
+    @api.depends('price_unit', 'cost_unit', 'discount', 'discount_absolute', 'taxes_id')
     def compute_margin(self):
         #TODO: FIX Tax computation
         if self.discount_absolute:
@@ -226,11 +262,13 @@ class SaleOrderMarginLineWizard(models.TransientModel):
         taxes = self.taxes_id.compute_all(selling_price, self.order_id.currency_id, self.product_uom_qty, product=self.product_id, partner=self.order_id.sale_order_id.partner_shipping_id)
         self.amount_tax = sum(t.get('amount', 0.0) for t in taxes.get('taxes', []))
         # If no fiscal position, the unit price is in gross and the amount_tax needs to be considered for margin computation
-        if not self.order_id.sale_order_id.fiscal_position_id:
+        #if not self.order_id.sale_order_id.fiscal_position_id:
+        if self.order_id.tax_mode == 'gross':
             self.margin = selling_price  - self.cost_unit - self.amount_tax
             if selling_price:
-                self.margin_percent = self.margin / selling_price * 100
-        else:
+                self.margin_percent = self.margin / (selling_price - self.amount_tax) * 100
+        #else:
+        if self.order_id.tax_mode == 'net':
             self.margin = selling_price - self.cost_unit
             if selling_price:
                 self.margin_percent = self.margin / selling_price * 100
