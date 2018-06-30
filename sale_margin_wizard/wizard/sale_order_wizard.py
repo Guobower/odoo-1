@@ -105,7 +105,7 @@ class SaleOrderMarginWizard(models.TransientModel):
 
     @api.depends('order_line_ids.discount', 'order_line_ids.discount_absolute', 'order_line_ids.price_unit', 'order_line_ids.cost_unit')
     def compute_total(self):
-        #taxes = 0
+        taxes = 0
         for line in self.order_line_ids:
             self.amount_total += line.price_discounted * line.product_uom_qty
             self.margin_total += line.margin * line.product_uom_qty
@@ -141,17 +141,15 @@ class SaleOrderMarginWizard(models.TransientModel):
                 line.discount = 0
                 line.discount_absolute = 0
 
+                selling_price = line.cost_unit / ((100 - self.margin_target) / 100)
                 if self.tax_mode == 'gross':
                     # Since the tax is computed from the net price, we need to compute with the net fiscal pos/taxes
                     # Otherwiese the tax is computed to be included resulting in a too low price
-                    selling_price = (line.cost_unit / ((100 - self.margin_target) / 100))
                     line.taxes_id = self.fiscal_position_net.map_tax(line.taxes_id, line.product_id, self.sale_order_id.partner_shipping_id)
                     taxes = line.taxes_id.compute_all(selling_price, self.currency_id, line.product_uom_qty, product=line.product_id, partner=self.sale_order_id.partner_shipping_id)
                     amount_tax = sum(t.get('amount', 0.0) for t in taxes.get('taxes', []))
                     selling_price += amount_tax
                     line.taxes_id = self.fiscal_position_gross.map_tax(line.taxes_id, line.product_id, self.sale_order_id.partner_shipping_id)
-                if self.tax_mode == 'net':
-                    selling_price = line.cost_unit / ((100 - self.margin_target) / 100)
 
                 if self.discount_mode == 'relative':
                     line.discount = (line.price_unit - selling_price) / line.price_unit * 100

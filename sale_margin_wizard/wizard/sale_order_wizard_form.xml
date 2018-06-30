@@ -14,9 +14,8 @@
                   </header>
                   <sheet>
                       <div class="oe_title">
-                          <h1>
-                              <field name="sale_order_id" readonly="1" invisible="1"/>
-                          </h1>
+                          <label for="sale_order_id" class="oe_edit_only"/>
+                          <h1><field name="sale_order_id" readonly="1"/></h1>
                       </div>
                       <group>
                           <group>
@@ -48,7 +47,7 @@
                                       <field name="discount" attrs="{'readonly': [('discount_absolute', '!=', 0)]}"/>
                                       <field name="discount_absolute" attrs="{'readonly': [('discount', '!=', 0)]}"/>
                                       <field name="amount_tax" attrs="{'column_invisible':[('parent.show_amount_tax', '=', False)]}"/>
-                                      <field name="taxes_id" invisible="0" widget="many2many_tags"/>
+                                      <field name="taxes_id" invisible="1" widget="many2many_tags"/>
                                       <field name="price_discounted" readonly="1" widget="monetary"/>
                                       <field name="margin" readonly="1" attrs="{'column_invisible':[('parent.show_absolute_margin', '=', False)]}"/>
                                       <field name="margin_percent" widget="progressbar"/>

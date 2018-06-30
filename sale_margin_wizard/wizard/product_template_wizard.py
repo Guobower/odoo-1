@@ -137,6 +137,9 @@ class ProductTemplateMarginWizard(models.TransientModel):
                     line.is_target_line = False
         else:
             target_price = self.cost_unit / ((100 - self.margin_target) / 100)
+            if self.tax_mode == 'gross':
+                target_price = target_price * ((100 + self.tax_factor) / 100)
+
             for line in self.margin_line_ids:
                 if line.price_unit > target_price:
                     line.price_unit = target_price
@@ -185,12 +188,13 @@ class ProductTemplateMarginLineWizard(models.TransientModel):
         if self.wizard_id.tax_mode == 'gross':
             net_price = self.price_unit / ((100 + self.wizard_id.tax_factor) / 100)
             self.amount_tax  = self.price_unit - net_price
-            self.margin = self.price_unit - self.amount_tax -  self.cost_unit
+            self.margin = self.price_unit - self.amount_tax - self.cost_unit
             if self.price_unit:
-                self.margin_percent = self.margin / self.price_unit * 100
+                self.margin_percent = self.margin / (self.price_unit - self.amount_tax) * 100
             if self.wizard_id.price_regular:
                 self.discount = 100 - self.price_unit / self.wizard_id.price_regular * 100
             self.discount_absolute = self.wizard_id.price_regular - self.price_unit
+
         if self.wizard_id.tax_mode == 'net':
             self.amount_tax = self.price_unit * (self.wizard_id.tax_factor / 100)
             self.margin = self.price_unit - self.cost_unit

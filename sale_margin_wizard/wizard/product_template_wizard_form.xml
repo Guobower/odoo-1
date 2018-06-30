@@ -6,8 +6,9 @@
             <field name="arch" type="xml">
                 <form string="Product Sale Margins">
                 <sheet>
-                    <div>
-                            <field name="product_tmpl_id"/>
+                    <div class="oe_title">
+                        <label for="product_tmpl_id" class="oe_edit_only"/>
+                        <h1><field name="product_tmpl_id" readonly="1"/></h1>
                     </div>
                     <group>
                         <group>
@@ -15,7 +16,7 @@
                             <field name="price_target" attrs="{'readonly': ['|', ('margin_target', '!=', 0), ('discount_target', '!=', 0)]}"/>
                             <field name="margin_target" attrs="{'readonly': ['|', ('price_target', '!=', 0), ('discount_target', '!=', 0)]}"/>
                             <field name="discount_target" attrs="{'readonly': ['|', ('price_target', '!=', 0), ('margin_target', '!=', 0)]}"/>
-                            <field name="pricelist_id"/>
+                            <field name="pricelist_id" invisible="1"/>
                         </group>
                         <group>
                             <field name="company_id" invisible="1"/>
@@ -24,7 +25,7 @@
                             <field name="price_regular" readonly="1" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}" />
                             <field name="cost_unit" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
                             <field name="tax_mode"/>
-                            <field name="tax_factor"/>
+                            <field name="tax_factor" invisible="1"/>
                             <field name="has_special_price" invisible="1"/>
                         </group>
                     </group>
@@ -42,18 +43,20 @@
                                     <field name="margin_percent" widget="progressbar"/>
                                     <field name="margin" readonly="1" attrs="{'column_invisible':[('parent.show_absolute_margin', '=', False)]}" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}"/>
                                     <field name="is_target_line" invisible="1"/>
-                                    <field name="tax_mode_line"/>
+                                    <field name="tax_mode_line" invisible="1"/>
                                 </tree>
                             </field>
                         </page>
                         <page string="View Options">
                             <group>
-                                <field name="show_unit_cost"/>
-                                <field name="show_absolute_margin"/>
-                                <field name="show_amount_tax"/>
-                            </group>
-                            <group>
-                                <field name="number_margin_lines"/>
+                                <group>
+                                    <field name="show_unit_cost"/>
+                                    <field name="show_absolute_margin"/>
+                                    <field name="show_amount_tax"/>
+                                </group>
+                                <group>
+                                    <field name="number_margin_lines"/>
+                                </group>
                             </group>
                         </page>
                     </notebook>
