@@ -36,8 +36,8 @@ class SaleOrderMarginWizard(models.TransientModel):
     margin_percent_total = fields.Float(string='Margin Total (%)', compute="compute_total", digits=dp.get_precision('Discount'))
     discount_total = fields.Float(string='Discount Total', compute='compute_total', digits=dp.get_precision('Product Price'))
     discount_percent_total = fields.Float(string='Discount Total (%)', compute='compute_total', digits=dp.get_precision('Discount'))
-    fiscal_position_gross = fields.Many2one('account.fiscal.position', string='Fiscal Position Gross')
-    fiscal_position_net = fields.Many2one('account.fiscal.position', string='Fiscal Position Net')
+    fiscal_position_gross = fields.Many2one('account.fiscal.position', string='Fiscal Position Gross', default=lambda self: self.env.user.company_id.fiscal_pos_gross.id)
+    fiscal_position_net = fields.Many2one('account.fiscal.position', string='Fiscal Position Net', default=lambda self: self.env.user.company_id.fiscal_pos_net.id)
 
     # View Option fields
     show_sections = fields.Boolean(string="Show Sections", default=False)

@@ -1,0 +1,17 @@
+<odoo>
+  <record id="view_company_form_fiscal_pos" model="ir.ui.view">
+      <field name="name">res.company.fiscal.pos</field>
+      <field name="model">res.company</field>
+      <field name="inherit_id" ref="base.view_company_form"/>
+      <field name="priority">100</field>
+      <field name="arch" type="xml">
+          <xpath expr="//group[@name='social_media']" position="after">
+              <group>
+                  <field name="fiscal_pos_gross" />
+                  <field name="fiscal_pos_net" />
+              </group>
+          </xpath>
+      </field>
+  </record>
+
+</odoo>
