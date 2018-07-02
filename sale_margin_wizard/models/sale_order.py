@@ -7,6 +7,9 @@ class SaleOrder(models.Model):
 
     def create_margin_wizard(self):
         view = self.env.ref('sale_margin_wizard.sale_order_margin_wizard_form')
+        tax_mode = 'gross'
+        if self.fiscal_position_id == self.env.user.company_id.fiscal_pos_net:
+            tax_mode = 'net'
         vals = {
             'partner_id': self.partner_id.id,
             'salesperson_id': self.user_id.id,
@@ -14,6 +17,7 @@ class SaleOrder(models.Model):
             'company_id': self.company_id.id,
             'sale_order_id': self.id,
             'pricelist_id': self.pricelist_id.id,
+            'tax_mode': tax_mode,
             #'fiscal_pos': self.fiscal_position_id.id,
         }
         wizard = self.env['sale.order.margin.wizard'].create(vals)
