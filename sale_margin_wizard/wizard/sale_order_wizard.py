@@ -61,7 +61,6 @@ class SaleOrderMarginWizard(models.TransientModel):
             'res_id': self.sale_order_id.id,
             #'views': [(tree_view, 'tree'), (form_view, 'form')],
             'views': [(form_view, 'form')],
-            #'context': {'search_default_helpdesk_ticket_id': self.id}
         }
 
     def create_so_lines(self, s_order):
@@ -291,6 +290,7 @@ class SaleOrderMarginLineWizard(models.TransientModel):
             'has_special_price': has_special_price,
             'tax_factor': tax_factor,
             'taxes_id': [(6, 0, self.taxes_id.ids)] or False,
+            'created_from_so': True,
         }
         wizard = self.env['product.template.margin.wizard'].create(vals)
         wizard.create_margin_lines(self)

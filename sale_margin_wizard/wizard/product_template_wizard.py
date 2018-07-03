@@ -45,7 +45,7 @@ class ProductTemplateMarginWizard(models.TransientModel):
     show_amount_tax = fields.Boolean(string="Show Amount Tax", default=False)
 
     number_margin_lines = fields.Float(string="# Margin Lines", default=6, help="Number of margin lines computed aside from the selling price.")
-
+    created_from_so = fields.Boolean(string='Wizard created from SO?', default=False)
 
     def compute_factors(self):
         return True
@@ -162,6 +162,13 @@ class ProductTemplateMarginWizard(models.TransientModel):
                 line.price_unit = line.price_unit / ((100 + self.tax_factor) / 100)
                 line.tax_mode_line = False
 
+    def manipulate_prices(self):
+        for line in self.order_line_ids:
+            line.sale_order_line_id.discount =  line.discount
+            line.sale_order_line_id.discount_absolute = line.discount_absolute
+            line.sale_order_line_id.price_unit = line.price_unit
+            line.sale_order_line_id.purchase_price = line.cost_unit
+            
 
 class ProductTemplateMarginLineWizard(models.TransientModel):
     _name = 'product.template.margin.line.wizard'

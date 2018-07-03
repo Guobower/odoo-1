@@ -16,10 +16,6 @@
               <header position="inside">
                   <button name="create_margin_wizard" string="Pricing" type="object" groups="sale_margin_extend.groups_sale_margin"/>
               </header>
-            <!--
-              <xpath expr="//button[@name='print_quotation']" position="after">
-                  <button name="create_margin_wizard" type="object" string="Pricing" groups="sale_margin_extend.groups_sale_margin"/>
-              </xpath>-->
           </field>
       </record>
 

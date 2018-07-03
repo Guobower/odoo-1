@@ -56,13 +56,14 @@
                                 </group>
                                 <group>
                                     <field name="number_margin_lines"/>
+                                    <field name="created_from_so" invisible="1"/>
                                 </group>
                             </group>
                         </page>
                     </notebook>
                 </sheet>
                     <footer>
-                      <!--  <button name="manipulate_prices" string="Change Prices" type="object" class="btn-primary"/> -->
+                        <button name="manipulate_prices" string="Change Prices" type="object" class="btn-primary" attrs="{'invisible':[('created_from_so', '=', False)]}"/>
                         <button special="cancel" string="Cancel" class="btn-default"/>
                     </footer>
                 </form>
